@@ -9,7 +9,8 @@ const sass = require("gulp-sass");
 const econ = require("electron-connect").server.create();
 
 const src = {
-  sass: "./src/sass/**/*.scss"
+  sass: "src/sass/**/*.scss",
+  js: ["./app.js"]
 };
 
 const dist = {
@@ -26,18 +27,6 @@ gulp.task("sass", () => {
 gulp.task("serve", () => {
   econ.start();
   gulp.watch(["./main.js"], econ.restart);
-  gulp.watch([src.sass, "./index.html"], ["sass", econ.reload]);
-});
-
-
-gulp.task("exec:index", (cb) => {
-  exec(`node ${index}` , (err, stdout, stderr) => {
-    console.log(stdout);
-    console.log(stderr);
-    cb();
-  });
-});
-
-gulp.task("watch", () => {
-  gulp.watch(src.sass, ["sass"]);
+  gulp.watch([src.sass], ["sass", econ.reload]);
+  gulp.watch(["./index.html", src.js], econ.reload);
 });
