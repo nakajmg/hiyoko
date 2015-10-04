@@ -2,38 +2,75 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>メイン</title>
+    <title>hiyoko</title>
     <style>
       [v-cloak] {
         display: none;
       }
     </style>
     <link rel="stylesheet" href="./dist/app.css"/>
+    <link rel="stylesheet" href="./node_modules/highlight.js/styles/github.css"/>
+    <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css"/>
   </head>
 <body>
 
   <div id="app" v-cloak>
-    <div class="l-toolbar">
-      <label>
-        <input type="checkbox" v-model="config.preview">Preview
-      </label>
-
-    </div>
-    <div class="l-md">
-      <div class="l-input">
-        <textarea class="textarea" v-model="input"></textarea>
+    <div class="l-main">
+      <div class="l-menu">
+        <ul class="m-menu">
+          <li class="m-menu__item m-menu__item--current">
+          <a>
+            <i class="fa fa-file-text-o"></i><span>POSTS</span>
+          </a>
+          </li>
+        </ul>
       </div>
-      <div class="l-preview" v-if="config.preview">
-        {{{preview}}}
+      <div class="l-posts">
+        <ul class="m-postList">
+          <li class="m-postList__item" v-for="post in posts"
+          v-bind:class="{'m-postList__item--current': $index === current}" v-on:click="changePost($index)">
+            <a>{{post.title}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="l-md">
+        <div class="l-input" v-if="config.editor">
+          <div class="m-editor">
+            <input v-if="posts[current]" type="text" v-model="posts[current].title">
+            <textarea v-if="posts[current]" class="textarea" v-model="posts[current].content"></textarea>
+          </div>
+        </div>
+        <div class="l-preview" v-if="config.preview">
+          <div class="m-preview">
+            <h2 class="m-preview__title">
+              <template v-if="posts[current]">
+                <div v-bind:class="[posts[current].wip ? 'm-preview__wip' : 'm-preview__shipped']">
+                  <span>{{posts[current].title}}</span>
+                </div>
+              </template>
+            </h2>
+
+            {{{preview}}}
+          </div>
+        </div>
+        <div class="l-md__toolbar">
+          <label class="m-toolBtn">
+            <input type="checkbox" v-model="config.editor"><i class="fa fa-pencil"></i>
+          </label>
+          <label class="m-toolBtn">
+            <input type="checkbox" v-model="config.preview"><i class="fa fa-eye"></i>
+          </label>
+        </div>
       </div>
     </div>
   </div>
 
-<script src="app.js"></script>
+<script src="lib/highlight.pack.js"></script>
 <script>
   var $ = jQuery = require('jquery');
 </script>
 <script src="lib/jquery.selection.js"></script>
+<script src="app.js"></script>
 <script src="lib/jquery.esarea.js"></script>
 <script>
   $('.textarea').esarea();
