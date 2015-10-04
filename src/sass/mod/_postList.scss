@@ -7,7 +7,18 @@
   font-size: 14px;
   height: 100%;
   min-width: 220px;
-  overflow: auto;
+  //overflow-y: scroll;
+  position: relative;
+  &:after {
+    right: 100%;
+    position: absolute;
+    content: "";
+    display: block;
+    border: 10px solid transparent;
+    border-right: 10px solid #555;
+    top: 32px;
+    z-index: 1;
+  }
   &__item {
     cursor: pointer;
     a {

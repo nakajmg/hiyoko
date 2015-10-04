@@ -17,40 +17,32 @@
   var posts = [
     {
       wip: false,
-      title: "post1",
+      title: "(\\( ⁰⊖⁰)/) 1",
       content: "# post1\n* hoge\n* hoge2"
     },
     {
       wip: true,
-      title: "post2",
-      content: `
-|aaa|ggg|
-|---|---|
-|hoge|hoge|
-|hoge|hoge|
-
-# heading1
+      title: "(\\( ⁰⊖⁰)/) 2",
+      content: `# heading1
 
 ## heading2
 
 ### heading3
 
-#### heading4
-
-##### heading5
-
-* list
-* list
-
 \`\`\`js
 var code = "code";
 \`\`\`
 
-![hoge](https://img.esa.io/uploads/production/users/4496/icon/thumb_ms_edcc7dc6067a5af2bf0ad8c40a0ea809.jpg)
-
-[hogehoge](https://img.esa.io/uploads/production/users/4496/icon/thumb_ms_edcc7dc6067a5af2bf0ad8c40a0ea809.jpg)
-
-      `
+|aaa|ggg|
+|---|---|
+|hoge|hoge|
+|hoge|hoge|
+`
+    },
+    {
+      wip: false,
+      title: "(\\( ⁰⊖⁰)/) 3",
+      content: `hoge`
     }
   ];
 
@@ -59,10 +51,11 @@ var code = "code";
     data: {
       config: {
         editor: true,
-        preview: true
+        preview: true,
+        posts: true,
       },
       posts: [],
-      current: 0
+      current: 1
     },
     computed: {
       preview: function() {
@@ -84,6 +77,9 @@ var code = "code";
         else {
           this.current = $index;
         }
+      },
+      toggleMenu(name) {
+        this.config[name] = !this.config[name];
       }
     }
   });

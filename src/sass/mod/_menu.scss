@@ -19,6 +19,7 @@
       padding-top: 12px;
       color: rgba(0,0,0,0.3);
       box-sizing: border-box;
+      transition-duration: 0.3s;
     }
     i {
       width: 80px;
@@ -28,21 +29,19 @@
       display: block;
       transition-duration: 0.3s;
     }
+    &:hover {
+      a {
+        color: #fff;
+      }
+      i {
+        color: rgba(255,255,255,0.5);
+      }
+    }
   }
   &__item--current {
     a {
       background-color: rgba(0,0,0,0.05);
       color: white;
-
-      &:after {
-        left: 60px;
-        position: absolute;
-        content: "";
-        display: block;
-        border: 10px solid transparent;
-        border-right: 10px solid #555;
-        top: 22px;
-      }
     }
     i {
       color: rgba(255,255,255,0.5);

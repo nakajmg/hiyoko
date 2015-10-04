@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>hiyoko</title>
+    <title>(⁰⊖⁰)</title>
     <style>
       [v-cloak] {
         display: none;
@@ -18,14 +18,15 @@
     <div class="l-main">
       <div class="l-menu">
         <ul class="m-menu">
-          <li class="m-menu__item m-menu__item--current">
-          <a>
-            <i class="fa fa-file-text-o"></i><span>POSTS</span>
-          </a>
+          <li class="m-menu__item" v-bind:class="{'m-menu__item--current': config.posts}"
+          v-on:click="toggleMenu('posts')">
+            <a>
+              <i class="fa fa-file-text-o"></i><span>POSTS</span>
+            </a>
           </li>
         </ul>
       </div>
-      <div class="l-posts">
+      <div class="l-posts" v-if="config.posts">
         <ul class="m-postList">
           <li class="m-postList__item" v-for="post in posts"
           v-bind:class="{'m-postList__item--current': $index === current}" v-on:click="changePost($index)">
