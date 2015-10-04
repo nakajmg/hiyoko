@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>メイン</title>
+    <style>
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+    <link rel="stylesheet" href="./dist/app.css"/>
+  </head>
+<body>
+
+  <div id="app" v-cloak>
+    <div class="l-toolbar">
+      <label>
+        <input type="checkbox" v-model="config.preview">Preview
+      </label>
+
+    </div>
+    <div class="l-md">
+      <div class="l-input">
+        <textarea class="textarea" v-model="input"></textarea>
+      </div>
+      <div class="l-preview" v-if="config.preview">
+        {{{preview}}}
+      </div>
+    </div>
+  </div>
+
+<script src="app.js"></script>
+<script>
+  var $ = jQuery = require('jquery');
+</script>
+<script src="lib/jquery.selection.js"></script>
+<script src="lib/jquery.esarea.js"></script>
+<script>
+  $('.textarea').esarea();
+</script>
+<script>require('electron-connect').client.create()</script>
+</body>
+</html>
