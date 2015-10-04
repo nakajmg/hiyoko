@@ -1,0 +1,50 @@
+.m-editor {
+  height: 100%;
+  input {
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    display: block;
+    width: 100%;
+    height: 36px;
+    padding: 6px 12px;
+    line-height: 1.6;
+    color: #3c4a60;
+    background-color: rgba(0,0,0,0.1);
+    background-image: none;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    font-size: 140%;
+    height: auto;
+    &:focus {
+      background-color: #fff;
+      border-color: #66afe9;
+      outline: 0;
+    }
+  }
+
+  textarea {
+    background-color: rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 6px;
+    //border-bottom-left-radius: none;
+    //border-bottom-right-radius: none;
+    font-size: 14px;
+    -webkit-appearance: none;
+    margin: 0;
+    padding: 1em;
+    width: 100%;
+    height: calc(100% - 70px);
+    //height: 100%;
+    display: block;
+    box-sizing: border-box;
+    outline: none;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    &:focus {
+      background-color: #fff;
+      border-color: #66afe9;
+      outline: 0;
+    }
+  }
+}

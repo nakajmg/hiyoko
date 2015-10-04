@@ -1,0 +1,51 @@
+.m-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: $color-main;
+  color: #fff;
+  height: 100%;
+  padding-top: 10px;
+  box-sizing: border-box;
+  &__item {
+    a {
+      position: relative;
+      display: block;
+      width: 80px;
+      height: 68px;
+      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      font-size: 11px;
+      padding-top: 12px;
+      color: rgba(0,0,0,0.3);
+      box-sizing: border-box;
+    }
+    i {
+      width: 80px;
+      text-align: center;
+      font-size: 28px;
+      color: rgba(0,0,0,0.1);
+      display: block;
+      transition-duration: 0.3s;
+    }
+  }
+  &__item--current {
+    a {
+      background-color: rgba(0,0,0,0.05);
+      color: white;
+
+      &:after {
+        left: 60px;
+        position: absolute;
+        content: "";
+        display: block;
+        border: 10px solid transparent;
+        border-right: 10px solid #555;
+        top: 22px;
+      }
+    }
+    i {
+      color: rgba(255,255,255,0.5);
+    }
+  }
+}

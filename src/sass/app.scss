@@ -1,11 +1,21 @@
-@import "mod/all";
-@import "layout/all";
-
 html, body {
   padding: 0;
   margin: 0;
   height: 100%;
+  font-family: "Lato", Arial, "ヒラギノ角ゴPro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+  background-color: #fff;
+  color: #3c4a60;
+  line-height: 1.8;
 }
 #app {
   height: 100%;
 }
+
+$color-main: #0a9b94;
+$color-text-active: #fff;
+$color-text-grey: rgba(0,0,0,0.3);
+$color-toolbar: #efede0;
+$color-toolbar-fore: rgba(0,0,0,0.3);
+$hoge: "hoge";
+@import "mod/all";
+@import "layout/all";
