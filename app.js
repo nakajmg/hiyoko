@@ -112,7 +112,7 @@ var emosa = require("emosa");
       },
       createNewPost() {
         var defaults = _.assign({}, DEFAULTS_POST, {user: this.env.user, created_at: moment().tz("Asia/Tokyo").format()});
-        this.posts.$set(this.posts.length, defaults);
+        this.save(this.posts.length, defaults);
         this.current = this.posts.length - 1;
         this.config.editor = true;
         this.config.preview = true;
@@ -123,14 +123,15 @@ var emosa = require("emosa");
       },
       publish(wip) {
         var post = toJSON(this.currentPost);
-        post.message = "API publish";
+        // コミットメッセージを入力させる
+        post.message = "";
         post.wip = wip;
         var method = _.isUndefined(post.number) ? "POST" : "PATCH";
 
-        this[method]("posts", post)
+        return this[method]("posts", post)
           .then((json) => {
             console.log(json);
-            this.posts.$set(this.current, json);
+            this.save(this.current, json);
           })
           .catch((err) => {
             console.log(err);
@@ -141,7 +142,8 @@ var emosa = require("emosa");
       },
       deletePost($index) {
         var post = toJSON(this.posts[$index]);
-        this.DELETE(post)
+
+        return this.DELETE(post)
           .then(() => {
             this.removePost($index);
           })
@@ -158,6 +160,28 @@ var emosa = require("emosa");
         }
         else if (this.currentPost && this.currentPost.url) {
           require("shell").openExternal(this.currentPost.url);
+        }
+      },
+      sync() {
+        var post = toJSON(this.currentPost);
+        if (post.number) {
+          return this.GET(`posts/${post.number}`)
+            .then((json) => {
+              if (json.revision_number > post.revision_number) {
+                this.save(this.current, json);
+              }else {
+                console.log(post.updated_at, json.updated_at);
+                var p = moment(post.updated_at).tz("Asia/Tokyo").unix();
+                var j = moment(json.updated_at).tz("Asia/Tokyo").unix();
+                if (p > j) {
+                  // remoteをupdateするか確認出す
+                  return this.publish(post.wip)
+                }
+              }
+            })
+            .finally(()=> {
+              this.isLoading = false;
+            });
         }
       },
       PATCH(endpoint, post) {
@@ -177,7 +201,12 @@ var emosa = require("emosa");
       },
       POST(endpoint, post, method) {
         this.isLoading = true;
-
+        if(!post.message && !method) {
+          post.message = "Create post.";
+        }
+        if(!post.message && method) {
+          post.message = "Update post."
+        }
         return new Promise((resolve, reject) => {
           fetch(`${this.baseUrl}${endpoint}`, {
             method: method ? method : "post",
@@ -210,6 +239,28 @@ var emosa = require("emosa");
           .then(resolve)
           .catch(reject);
         });
+      },
+      GET(endpoint) {
+        this.isLoading = true;
+
+        return new Promise((resolve, reject) => {
+          fetch(`${this.baseUrl}${endpoint}`, {
+            method: "get",
+            headers: {
+              "Authorization": `Bearer ${this.env.token}`,
+              "Content-Type": "application/json"
+            }
+          })
+          .then((res) => {
+            resolve(res.json());
+          })
+          .catch(reject);
+        });
+      },
+
+      save($index, post) {
+        post.updated_at = moment().tz("Asia/Tokyo").format();
+        this.posts.$set($index, post);
       },
       _refreshEditor() {
         if (this.config.editor) {
