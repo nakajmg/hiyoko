@@ -11,6 +11,18 @@ html, body {
   height: 100%;
 }
 
+.loading {
+  border: none;
+  background-color: transparent;
+  &[open] {
+    i {
+      color: #fff;
+      font-size: 80px;
+    }
+  }
+}
+
+
 $color-main: #0a9b94;
 $color-text-active: #fff;
 $color-text-grey: rgba(0,0,0,0.3);

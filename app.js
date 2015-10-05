@@ -4,7 +4,7 @@ var emosa = require("emosa");
   var hljs = require("highlight.js");
   var marked = require("marked");
   var PouchDB = require("pouchdb");
-  var db = new PouchDB("mydb");
+  db = new PouchDB("mydb");
   var fetch = require("isomorphic-fetch");
   var Promise = require("bluebird");
   var Qs = require("qs");
@@ -23,8 +23,8 @@ var emosa = require("emosa");
   });
 
   var DEFAULTS_POST = {
-    name: "(\\( ⁰⊖⁰)/)",
-    body_md: "",
+    name: "New Post",
+    body_md: "( ⁰⊖⁰)",
     tags: [],
     category: "",
     wip: true,
@@ -38,6 +38,7 @@ var emosa = require("emosa");
   vm = new Vue({
     el: "#app",
     data: {
+      isLoading: false,
       env: {
         user: "nakajmg",
         team: "pxgrid",
@@ -119,7 +120,7 @@ var emosa = require("emosa");
         this.config.editor = true;
         this.config.preview = true;
       },
-      deletePost($index) {
+      removePost($index) {
         if ($index === this.current) {
           this.current = null;
         }
@@ -139,38 +140,72 @@ var emosa = require("emosa");
         var post = toJSON(this.currentPost);
         post.message = "API no test!!";
         post.wip = false;
-
         this.POST("posts", post)
-          .then((res) => {
-            return res.json();
-          })
           .then((json) => {
             console.log(json);
             this.posts.$set(this.current, json);
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       },
       wip() {
         var post = toJSON(this.currentPost);
         post.message = "WIP no test!!";
         post.wip = true;
-
         this.POST("posts", post)
-          .then((res) => {
-            return res.json();
-          })
           .then((json) => {
             console.log(json);
             this.posts.$set(this.current, json);
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      },
+      deletePost($index) {
+        var post = toJSON(this.posts[$index]);
+        this.DELETE(post)
+          .then(() => {
+            this.removePost($index);
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       },
       POST(endpoint, post) {
-        return fetch(`${this.baseUrl}${endpoint}`, {
-          method: "post",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(post)
+        this.isLoading = true;
+
+        return new Promise((resolve, reject) => {
+          fetch(`${this.baseUrl}${endpoint}`, {
+            method: "post",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(post)
+          })
+          .then((res) => {
+            resolve(res.json());
+          })
+          .catch(reject);
+        });
+      },
+      DELETE(post) {
+        this.isLoading = true;
+
+        return new Promise((resolve, reject) => {
+          if (!post.number) {
+            resolve();
+          }
+          fetch(`${this.baseUrl}posts/${post.number}`, {
+            method: 'delete',
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+          })
+          .then(resolve)
+          .catch(reject);
         });
       },
       openUrl(url) {
@@ -180,8 +215,27 @@ var emosa = require("emosa");
         else if (this.currentPost && this.currentPost.url) {
           require("shell").openExternal(this.currentPost.url);
         }
+      },
+      _showLoader() {
+        if (this.$els.dialog.getAttribute("open") === null) {
+          this.$els.dialog.showModal();
+        }
+      },
+      _hideLoader() {
+        if (this.$els.dialog.getAttribute("open") !== null) {
+          this.$els.dialog.close();
+        }
+      },
+      _onChangeLoading() {
+        if (this.isLoading) {
+          this._showLoader();
+        }
+        else {
+          this._hideLoader();
+        }
       }
     },
+
     ready(){
       var value;
       value = this.isCurrent && this.posts[this.isCurrent] ? this.currentBody : '';
@@ -208,7 +262,7 @@ var emosa = require("emosa");
 
           this.$watch("posts", (value) => {
             var _posts = {
-              posts: this.toJSON("posts")
+              posts: toJSON(this.posts)
             };
             db.get(_id)
               .then((doc) => {
@@ -222,7 +276,8 @@ var emosa = require("emosa");
     },
     watch: {
       "current": "_onChangeCurrent",
-      "config.editor": "refreshEditor"
+      "config.editor": "refreshEditor",
+      "isLoading": "_onChangeLoading"
     }
 
   });
