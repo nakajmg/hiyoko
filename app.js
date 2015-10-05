@@ -3,7 +3,8 @@ var emosa = require("emosa");
   var Vue = require("vue");
   var hljs = require("highlight.js");
   var marked = require("marked");
-
+  var PouchDB = require("pouchdb");
+  db = new PouchDB("mydb");
 
   marked.setOptions({
     highlight:function(code, lang, callback) {
@@ -16,41 +17,6 @@ var emosa = require("emosa");
     }
   });
 
-
-  var posts = [
-    {
-      wip: false,
-      title: "(\\( ⁰⊖⁰)/) 1",
-      content: "# post1\n* hoge\n* hoge2"
-    },
-    {
-      wip: true,
-      title: "(\\( ⁰⊖⁰)/) 2",
-      content: `# heading1
-
-## heading2
-
-### heading3
-
-\`\`\`js
-var code = "code";
-\`\`\`
-
-|table|content|
-|---|---|
-|:horse:uma|umai:angel:|
-|:bird:tori|(\\\\( ⁰⊖⁰)/)|
-
-:+1::pray::bow::open_hands:
-`
-    },
-    {
-      wip: false,
-      title: "(\\( ⁰⊖⁰)/) 3",
-      content: `hoge`
-    }
-  ];
-
   var vm = new Vue({
     el: "#app",
     data: {
@@ -60,7 +26,7 @@ var code = "code";
         posts: true,
       },
       posts: [],
-      current: 1
+      current: null
     },
     computed: {
       preview() {
@@ -98,7 +64,10 @@ var code = "code";
       }
     },
     beforeCompile() {
-      this.$set('posts', posts);
+//      db.get("posts")
+//        .then((posts) => {
+//          this.$set("posts", posts.posts);
+//        });
     },
     methods: {
       changePost($index) {
@@ -114,11 +83,20 @@ var code = "code";
       },
       _onChangeCurrent() {
         this.editor.setValue(this.currentContent);
+      },
+      _onUpdatePosts() {
+        console.log("update");
+      },
+      toJSON(prop) {
+        return JSON.parse(JSON.stringify(this[prop]));
       }
     },
     ready(){
+      var value;
+      value = this.isCurrent && this.posts[this.isCurrent] ? this.currentContent : '';
+
       var editor = CodeMirror(this.$els.codemirror, {
-        value: this.posts[this.current].content
+        value: value
       });
       editor.addKeyMap({
         "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
@@ -131,19 +109,23 @@ var code = "code";
       });
 
       this.editor = editor;
+
+      db.get("posts")
+        .then((posts) => {
+          this.$set("posts", posts.posts);
+          this.$watch("posts", () => {
+            var posts = {
+              _id: "posts",
+              posts: this.toJSON("posts")
+            };
+            console.log(posts);
+          }, {deep: true});
+        });
     },
     watch: {
-      "current": "_onChangeCurrent"
+      "current": "_onChangeCurrent",
     }
 
   });
-//  var PouchDB = require("pouchdb");
-//  var db = new PouchDB("mydb-idb");
-//  var websqlDB = new PouchDB("mydb-websql", {adapter: "websql"});
-//  var levelDB = new PouchDB("mydb-leveldb");
-//
-//  console.log(db.adapter);
-//  console.log(websqlDB.adapter);
-//  console.log(levelDB.adapter);
 
 })();

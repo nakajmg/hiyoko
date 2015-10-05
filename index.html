@@ -69,42 +69,13 @@
       </div>
     </div>
   </div>
+  <!--<button id="fetch">fetch</button>-->
 
-  <script src="./node_modules/codemirror/lib/codemirror.js"></script>
-  <script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
-  <script src="./node_modules/codemirror/addon/hint/show-hint.js"></script>
-<!--<script>-->
-  <!--var $ = jQuery = require('jquery');-->
-<!--</script>-->
-<!--<script src="lib/jquery.selection.js"></script>-->
+<script src="./node_modules/codemirror/lib/codemirror.js"></script>
+<script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
+<script src="./node_modules/codemirror/addon/hint/show-hint.js"></script>
 <script src="app.js"></script>
-<!--<script src="lib/jquery.esarea.js"></script>-->
-<!--<script>-->
-  <!--$('.textarea').esarea();-->
-<!--</script>-->
-
-<script>
-//  var Pos = CodeMirror.Pos;
-//  var emojiList = Object.keys(emosa.getMap()).map((emoji)=> { return `:${emoji}:`});
-//  editor.on("change", function(cm) {
-//    CodeMirror.showHint(cm, function() {
-//      var cur = cm.getCursor()
-//      var token = cm.getTokenAt(cur);
-//      var start = token.start;
-//      var end = token.end;
-//      var from = Pos(cur.line, start);
-//      var to = Pos(cur.line, end);
-//
-//      if (token.string == ":") {
-//        return {
-//          list: emojiList,
-//          from: from,
-//          to: to
-//        }
-//      }
-//    });
-//  });
-</script>
+<script src="temp.js"></script>
 <script>require('electron-connect').client.create()</script>
 </body>
 </html>
