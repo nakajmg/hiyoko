@@ -64,8 +64,8 @@
           </template>
 
           <div v-if="isCurrent" class="m-publishBtn">
-            <button v-on:click="wip" class="m-publishBtn__wip" v-bind:class="{'state-current': currentPost.wip}">Save as WIP</button>
-            <button v-on:click="shipit" class="m-publishBtn__ship" v-bind:class="{'state-current': !currentPost.wip}">Ship It!</button>
+            <button v-on:click="publish(true)" class="m-publishBtn__wip" v-bind:class="{'state-current': currentPost.wip}">Save as WIP</button>
+            <button v-on:click="publish(false)" class="m-publishBtn__ship" v-bind:class="{'state-current': !currentPost.wip}">Ship It!</button>
           </div>
         </div>
 
@@ -101,7 +101,6 @@
 <script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
 <script src="./node_modules/codemirror/addon/hint/show-hint.js"></script>
 <script src="app.js"></script>
-<script src="temp.js"></script>
 <script>require('electron-connect').client.create()</script>
 </body>
 </html>

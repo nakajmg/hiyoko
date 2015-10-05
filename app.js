@@ -10,6 +10,7 @@ var emosa = require("emosa");
   var Qs = require("qs");
   var moment = require("moment-timezone");
   var _ = require("lodash");
+  var token = require("./token");
 
   marked.setOptions({
     highlight:function(code, lang, callback) {
@@ -54,6 +55,8 @@ var emosa = require("emosa");
       posts: [],
       current: null
     },
+
+    /* computed */
     computed: {
       baseUrl() {
         return `${this.env.api}${this.env.team}/`;
@@ -91,30 +94,21 @@ var emosa = require("emosa");
         return this.posts.length !== 0;
       }
     },
-    beforeCompile() {
-//      db.get("posts")
-//        .then((posts) => {
-//          this.$set("posts", posts.posts);
-//        });
+
+    /* watch */
+    watch: {
+      "current": "_onChangeCurrent",
+        "config.editor": "_refreshEditor",
+        "isLoading": "_onChangeLoading"
     },
+
+    /* methods */
     methods: {
       changePost($index) {
-        if (this.current === $index) {
-          this.current = null;
-        }
-        else {
-          this.current = $index;
-        }
+        this.current = $index;
       },
       toggleMenu(name) {
         this.config[name] = !this.config[name];
-      },
-      refreshEditor() {
-        if (this.config.editor) {
-          _.defer(() => {
-            this.editor.refresh();
-          });
-        }
       },
       createNewPost() {
         var defaults = _.assign({}, DEFAULTS_POST, {user: this.env.user, created_at: moment().tz("Asia/Tokyo").format()});
@@ -124,39 +118,22 @@ var emosa = require("emosa");
         this.config.preview = true;
       },
       removePost($index) {
-        if ($index === this.current) {
-          this.current = null;
-        }
+        if ($index === this.current) this.current = null;
         this.posts.splice($index, 1);
       },
-      _onChangeCurrent() {
-        this.editor.setValue(this.currentBody);
-        this.refreshEditor();
-      },
-      toJSON(prop) {
-        return JSON.parse(JSON.stringify(this[prop]));
-      },
-      shipit() {
+      publish(wip) {
         var post = toJSON(this.currentPost);
-        post.message = "API no test!!";
-        post.wip = false;
-        this.POST("posts", post)
+        post.message = "API publish";
+        post.wip = wip;
+        var method = _.isUndefined(post.number) ? "POST" : "PATCH";
+
+        this[method]("posts", post)
           .then((json) => {
             console.log(json);
             this.posts.$set(this.current, json);
           })
-          .finally(() => {
-            this.isLoading = false;
-          });
-      },
-      wip() {
-        var post = toJSON(this.currentPost);
-        post.message = "WIP no test!!";
-        post.wip = true;
-        this.POST("posts", post)
-          .then((json) => {
-            console.log(json);
-            this.posts.$set(this.current, json);
+          .catch((err) => {
+            console.log(err);
           })
           .finally(() => {
             this.isLoading = false;
@@ -168,18 +145,44 @@ var emosa = require("emosa");
           .then(() => {
             this.removePost($index);
           })
+          .catch((err) => {
+            console.log(err);
+          })
           .finally(() => {
             this.isLoading = false;
           });
       },
-      POST(endpoint, post) {
+      openUrl(url) {
+        if (_.isString(url)) {
+          require("shell").openExternal(url);
+        }
+        else if (this.currentPost && this.currentPost.url) {
+          require("shell").openExternal(this.currentPost.url);
+        }
+      },
+      PATCH(endpoint, post) {
+        var body = {
+          name: post.name,
+          body_md: post.body_md,
+          tags: post.tags,
+          category: post.category,
+          wip: post.wip,
+          message: post.message,
+          original_revision: {
+            number: post.revision_number,
+            user: post.updated_by.screen_name
+          }
+        };
+        return this.POST(`${endpoint}/${post.number}`, body, "patch")
+      },
+      POST(endpoint, post, method) {
         this.isLoading = true;
 
         return new Promise((resolve, reject) => {
           fetch(`${this.baseUrl}${endpoint}`, {
-            method: "post",
+            method: method ? method : "post",
             headers: {
-              "Authorization": `Bearer ${token}`,
+              "Authorization": `Bearer ${this.env.token}`,
               "Content-Type": "application/json"
             },
             body: JSON.stringify(post)
@@ -200,7 +203,7 @@ var emosa = require("emosa");
           fetch(`${this.baseUrl}posts/${post.number}`, {
             method: 'delete',
             headers: {
-              "Authorization": `Bearer ${token}`,
+              "Authorization": `Bearer ${this.env.token}`,
               "Content-Type": "application/json"
             }
           })
@@ -208,12 +211,11 @@ var emosa = require("emosa");
           .catch(reject);
         });
       },
-      openUrl(url) {
-        if (_.isString(url)) {
-          require("shell").openExternal(url);
-        }
-        else if (this.currentPost && this.currentPost.url) {
-          require("shell").openExternal(this.currentPost.url);
+      _refreshEditor() {
+        if (this.config.editor) {
+          _.defer(() => {
+            this.editor.refresh();
+          });
         }
       },
       _showLoader() {
@@ -233,53 +235,49 @@ var emosa = require("emosa");
         else {
           this._hideLoader();
         }
+      },
+      _onChangeCurrent() {
+        this.editor.setValue(this.currentBody);
+        this._refreshEditor();
+      },
+      _setupCodeMirror() {
+        var value = this.currentBody;
+        var editor = CodeMirror(this.$els.codemirror, {
+          value: value
+        });
+        editor.addKeyMap({
+          "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
+        });
+
+        editor.on("change", (cm) => {
+          if (this.isCurrent) {
+            this.posts[this.current].body_md = cm.getValue();
+          }
+        });
+        this.editor = editor;
+      },
+      _setupDB() {
+        db.get("posts")
+          .then((posts) => {
+            var _id = "posts";
+            this.$set(_id, posts.posts);
+
+            this.$watch(_id, (value) => {
+              var _posts = { posts: toJSON(this.posts) };
+              db.get(_id)
+                .then((doc) => {
+                  return db.put(_posts, _id, doc._rev)
+                });
+            }, {deep: true});
+          });
       }
     },
 
+    /* lifecycle */
     ready(){
-      var value;
-      value = this.isCurrent && this.posts[this.isCurrent] ? this.currentBody : '';
-
-      var editor = CodeMirror(this.$els.codemirror, {
-        value: value
-      });
-      editor.addKeyMap({
-        "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
-      });
-
-      editor.on("change", (cm) => {
-        if (this.isCurrent) {
-          this.posts[this.current].body_md = cm.getValue();
-        }
-      });
-
-      this.editor = editor;
-
-      db.get("posts")
-        .then((posts) => {
-          this.$set("posts", posts.posts);
-          var _id = "posts";
-
-          this.$watch("posts", (value) => {
-            var _posts = {
-              posts: toJSON(this.posts)
-            };
-            db.get(_id)
-              .then((doc) => {
-                return db.put(_posts, _id, doc._rev)
-              })
-              .then((res) => {
-//                console.log(res);
-              });
-          }, {deep: true});
-        });
-    },
-    watch: {
-      "current": "_onChangeCurrent",
-      "config.editor": "refreshEditor",
-      "isLoading": "_onChangeLoading"
+      this._setupCodeMirror();
+      this._setupDB();
     }
-
   });
 
 })();

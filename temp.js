@@ -1,9 +1,9 @@
-var Qs = require("qs");
-var team_name = "pxgrid";
-var Promise = require("bluebird");
-var fetch = require("isomorphic-fetch");
-var token = require("./token");
-var url = `https://api.esa.io/v1/teams/${team_name}`;
+//var Qs = require("qs");
+//var team_name = "pxgrid";
+//var Promise = require("bluebird");
+//var fetch = require("isomorphic-fetch");
+//var token = require("./token");
+//var url = `https://api.esa.io/v1/teams/${team_name}`;
 /*
 document.querySelector("#fetch").addEventListener("click", () => {
   fetch(url + `/posts`, {
