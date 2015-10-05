@@ -86,6 +86,9 @@ var emosa = require("emosa");
           return '';
         }
         return this.posts[this.current].title;
+      },
+      isPosts() {
+        return this.posts.length !== 0;
       }
     },
     beforeCompile() {
@@ -114,8 +117,8 @@ var emosa = require("emosa");
         }
       },
       createNewPost() {
-        var defaults = Object.assign(DEFAULTS_POST, {user: this.env.user, created_at: moment().tz("Asia/Tokyo").format()});
-        this.posts.push(defaults);
+        var defaults = _.assign({}, DEFAULTS_POST, {user: this.env.user, created_at: moment().tz("Asia/Tokyo").format()});
+        this.posts.$set(this.posts.length, defaults);
         this.current = this.posts.length - 1;
         this.config.editor = true;
         this.config.preview = true;
@@ -129,9 +132,6 @@ var emosa = require("emosa");
       _onChangeCurrent() {
         this.editor.setValue(this.currentBody);
         this.refreshEditor();
-      },
-      _onUpdatePosts() {
-        console.log("update");
       },
       toJSON(prop) {
         return JSON.parse(JSON.stringify(this[prop]));
