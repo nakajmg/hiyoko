@@ -1,17 +1,30 @@
 .m-toolBtn {
   cursor: pointer;
-  padding: 5px;
+  margin: 5px;
   input[type="checkbox"] {
     display: none;
 
     & + i {
       font-size: 26px;
       color: rgba(0, 0, 0, 0.3);
+      vertical-align: top;
     }
   }
   input[type="checkbox"]:checked {
     & + i {
       color: $color-main;
     }
+  }
+  a {
+    color: $color-main;
+    text-decoration: none;
+    i {
+      vertical-align: top;
+      font-size: 26px;
+    }
+  }
+  .fa-external-link {
+    margin-top: 2px;
+    vertical-align: top;
   }
 }

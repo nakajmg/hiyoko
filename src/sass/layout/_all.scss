@@ -26,7 +26,7 @@
       flex-grow: 1;
       height: 100%;
       overflow: scroll;
-      padding: 1em;
+      padding: 10px;
       box-sizing: border-box;
 
       .l-input__opt {
@@ -44,7 +44,7 @@
       flex-basis: 50%;
       box-sizing: border-box;
       flex-grow: 1;
-      padding: 1em;
+      padding: 10px;
       //padding-bottom: 40px;
       overflow: scroll;
       max-width: 800px;
@@ -58,6 +58,15 @@
       background-color: $color-toolbar;
       color: $color-toolbar-fore;
       padding: 10px;
+    }
+  }
+
+  .state-bottom {
+    padding-top: 0;
+    padding-bottom: 50px;
+    .l-md__toolbar {
+      top: initial;
+      bottom: 0;
     }
   }
 }

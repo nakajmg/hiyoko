@@ -18,6 +18,7 @@
 
   <div id="app" v-cloak>
     <div class="l-main">
+
       <div class="l-menu">
         <ul class="m-menu">
           <li class="m-menu__item" v-on:click="createNewPost">
@@ -26,24 +27,25 @@
               <span>NEW POST</span>
             </a>
           </li>
-          <li class="m-menu__item" v-bind:class="{'m-menu__item--current': config.posts}"
-          v-on:click="toggleMenu('posts')">
+          <li class="m-menu__item" v-bind:class="{'m-menu__item--current': config.posts}" v-on:click="toggleMenu('posts')">
             <a>
               <i class="fa fa-file-text-o"></i><span>POSTS</span>
             </a>
           </li>
         </ul>
       </div>
+
       <div class="l-posts" v-if="config.posts">
         <ul class="m-postList">
           <li class="m-postList__item" v-for="post in posts"
           v-bind:class="{'m-postList__item--current': $index === current}" v-on:click="changePost($index)">
-            <a>{{post.title}}</a>
+            <a>{{post.name}}</a>
             <span class="m-postList__trash" v-on:click="deletePost($index)"><i class="fa fa-trash"></i></span>
           </li>
         </ul>
       </div>
-      <div class="l-md">
+      <div class="l-md" v-bind:class="{'state-bottom': config.toolbarPos == 'bottom'}">
+
         <div class="l-md__toolbar">
           <label class="m-toolBtn">
             <input type="checkbox" v-model="config.editor"><i class="fa fa-pencil"></i>
@@ -51,25 +53,38 @@
           <label class="m-toolBtn">
             <input type="checkbox" v-model="config.preview"><i class="fa fa-eye"></i>
           </label>
+          <template v-if="currentPost && currentPost.url">
+            <span class="m-toolBtn">
+              <a v-on:click="openUrl"><i class="fa fa-external-link"></i></a>
+            </span>
+            <span class="m-toolBtn">
+              <a><i class="fa fa-refresh"></i></a>
+            </span>
+          </template>
+
+          <div v-if="isCurrent" class="m-publishBtn">
+            <button v-on:click="wip" class="m-publishBtn__wip" v-bind:class="{'state-current': currentPost.wip}">Save as WIP</button>
+            <button v-on:click="shipit" class="m-publishBtn__ship" v-bind:class="{'state-current': !currentPost.wip}">Ship It!</button>
+          </div>
         </div>
+
         <div class="l-input" v-show="config.editor">
           <div class="m-editor" v-el:codemirror v-show="isCurrent">
             <template v-if="isCurrent">
-              <input type="text" v-model="posts[current].title">
+              <input type="text" v-model="posts[current].name">
             </template>
-            <!--<textarea class="m-editor__textarea" v-if="posts[current]" class="textarea" v-model="posts[current].content"></textarea>-->
           </div>
         </div>
+
         <div class="l-preview" v-show="config.preview">
           <div class="m-preview" v-show="isCurrent">
             <h2 class="m-preview__title">
               <template v-if="isCurrent">
                 <div v-bind:class="[currentPost.wip ? 'm-preview__wip' : 'm-preview__shipped']">
-                  <span>{{currentPost.title}}</span>
+                  <span>{{currentPost.name}}</span>
                 </div>
               </template>
             </h2>
-
             {{{preview}}}
           </div>
         </div>

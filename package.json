@@ -21,6 +21,7 @@
     "lodash": "^3.10.1",
     "marked": "^0.3.5",
     "moment": "^2.10.6",
+    "moment-timezone": "^0.4.0",
     "pouchdb": "^4.0.3",
     "pouchdb-find": "^0.4.0",
     "qs": "^5.1.0",
