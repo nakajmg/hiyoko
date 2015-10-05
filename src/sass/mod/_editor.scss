@@ -24,7 +24,8 @@
     }
   }
 
-  textarea {
+  &__textarea , .CodeMirror {
+    font-family: inherit;
     background-color: rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 6px;
@@ -41,10 +42,10 @@
     box-sizing: border-box;
     outline: none;
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    &:focus {
-      background-color: #fff;
-      border-color: #66afe9;
-      outline: 0;
-    }
+  }
+  &__textarea:focus , .CodeMirror-focused{
+    background-color: #fff;
+    border-color: #66afe9;
+    outline: 0;
   }
 }

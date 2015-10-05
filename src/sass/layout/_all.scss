@@ -21,6 +21,7 @@
     box-sizing: border-box;
 
     .l-input {
+      flex-basis: 50%;
       flex-grow: 1;
       height: 100%;
       overflow: scroll;
@@ -39,6 +40,8 @@
     }
 
     .l-preview {
+      flex-basis: 50%;
+      box-sizing: border-box;
       flex-grow: 1;
       padding: 1em;
       //padding-bottom: 40px;
