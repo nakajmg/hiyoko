@@ -44,6 +44,14 @@
         </ul>
       </div>
       <div class="l-md">
+        <div class="l-md__toolbar">
+          <label class="m-toolBtn">
+            <input type="checkbox" v-model="config.editor"><i class="fa fa-pencil"></i>
+          </label>
+          <label class="m-toolBtn">
+            <input type="checkbox" v-model="config.preview"><i class="fa fa-eye"></i>
+          </label>
+        </div>
         <div class="l-input" v-show="config.editor">
           <div class="m-editor" v-el:codemirror v-show="isCurrent">
             <template v-if="isCurrent">
@@ -64,14 +72,6 @@
 
             {{{preview}}}
           </div>
-        </div>
-        <div class="l-md__toolbar">
-          <label class="m-toolBtn">
-            <input type="checkbox" v-model="config.editor"><i class="fa fa-pencil"></i>
-          </label>
-          <label class="m-toolBtn">
-            <input type="checkbox" v-model="config.preview"><i class="fa fa-eye"></i>
-          </label>
         </div>
       </div>
     </div>

@@ -20,6 +20,10 @@ var emosa = require("emosa");
   vm = new Vue({
     el: "#app",
     data: {
+      env: {
+        user: "nakajmg",
+        team: "pxgrid"
+      },
       config: {
         editor: true,
         preview: true,
