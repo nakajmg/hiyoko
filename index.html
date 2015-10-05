@@ -20,6 +20,12 @@
     <div class="l-main">
       <div class="l-menu">
         <ul class="m-menu">
+          <li class="m-menu__item" v-on:click="createNewPost">
+            <a>
+              <span class="m-menu__newPost"></span>
+              <span>NEW POST</span>
+            </a>
+          </li>
           <li class="m-menu__item" v-bind:class="{'m-menu__item--current': config.posts}"
           v-on:click="toggleMenu('posts')">
             <a>
@@ -33,6 +39,7 @@
           <li class="m-postList__item" v-for="post in posts"
           v-bind:class="{'m-postList__item--current': $index === current}" v-on:click="changePost($index)">
             <a>{{post.title}}</a>
+            <span class="m-postList__trash" v-on:click="deletePost($index)"><i class="fa fa-trash"></i></span>
           </li>
         </ul>
       </div>

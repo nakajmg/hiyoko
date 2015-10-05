@@ -5,12 +5,14 @@
   background-color: $color-main;
   color: #fff;
   height: 100%;
-  padding-top: 10px;
   box-sizing: border-box;
   &__item {
+    cursor: pointer;
     a {
       position: relative;
-      display: block;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       width: 80px;
       height: 68px;
       text-align: center;
@@ -41,10 +43,32 @@
   &__item--current {
     a {
       background-color: rgba(0,0,0,0.05);
-      color: white;
+      color: #fff;
     }
     i {
       color: rgba(255,255,255,0.5);
+    }
+  }
+  &__item:first-of-type {
+    a {
+      color: #fff;
+      padding-top: 0;
+      height: 100%;
+    }
+  }
+
+  &__newPost {
+    transition-duration: 0.3s;
+    transition-timing-function: ease-in-out;
+    width: 80px;
+    height: 80px;
+    display: block;
+    background-repeat: no-repeat;
+    background-size: 72px 60px;
+    background-position: 4px 20px;
+    background-image: url("../img/tori-atama-new-btn-bd5f1b7dc4c4a80f4ad8baaa1ce60e95.svg");
+    &:hover {
+      background-position: 4px 10px;
     }
   }
 }

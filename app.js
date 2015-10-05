@@ -17,7 +17,7 @@ var emosa = require("emosa");
     }
   });
 
-  var vm = new Vue({
+  vm = new Vue({
     el: "#app",
     data: {
       config: {
@@ -81,8 +81,25 @@ var emosa = require("emosa");
       toggleMenu(name) {
         this.config[name] = !this.config[name];
       },
+      createNewPost() {
+        var defaults = {
+          title: "(\\( ⁰⊖⁰)/)",
+          wip: true,
+          content: ""
+        };
+        this.posts.push(defaults);
+        this.current = this.posts.length - 1;
+        this.config.editor = true;
+        this.config.preview = true;
+      },
+      deletePost($index) {
+        this.posts.splice($index, 1);
+      },
       _onChangeCurrent() {
         this.editor.setValue(this.currentContent);
+        setTimeout(() => {
+          this.editor.refresh();
+        }, 0);
       },
       _onUpdatePosts() {
         console.log("update");
@@ -96,7 +113,8 @@ var emosa = require("emosa");
       value = this.isCurrent && this.posts[this.isCurrent] ? this.currentContent : '';
 
       var editor = CodeMirror(this.$els.codemirror, {
-        value: value
+        value: value,
+        autofocus: true
       });
       editor.addKeyMap({
         "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
@@ -113,12 +131,19 @@ var emosa = require("emosa");
       db.get("posts")
         .then((posts) => {
           this.$set("posts", posts.posts);
-          this.$watch("posts", () => {
-            var posts = {
-              _id: "posts",
+          var _id = "posts";
+
+          this.$watch("posts", (value) => {
+            var _posts = {
               posts: this.toJSON("posts")
             };
-            console.log(posts);
+            db.get(_id)
+              .then((doc) => {
+                return db.put(_posts, _id, doc._rev)
+              })
+              .then((res) => {
+//                console.log(res);
+              });
           }, {deep: true});
         });
     },

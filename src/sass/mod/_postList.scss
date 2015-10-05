@@ -16,11 +16,12 @@
     display: block;
     border: 10px solid transparent;
     border-right: 10px solid #555;
-    top: 32px;
+    top: 122px;
     z-index: 1;
   }
   &__item {
     cursor: pointer;
+    position: relative;
     a {
       padding: 10px;
       display: block;
@@ -39,6 +40,27 @@
       background-color: #333 !important;
       color: #fff !important;
     }
+  }
 
+  &__trash {
+    display: block;
+    opacity: 0.5;
+    width: 20px;
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    margin: auto;
+    z-index: 1;
+    cursor: pointer;
+    transition: 300ms ease;
+    font-size: 16px;
+    &:hover {
+      color: tomato;
+      opacity: 1;
+    }
   }
 }
