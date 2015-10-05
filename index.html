@@ -37,20 +37,20 @@
         </ul>
       </div>
       <div class="l-md">
-        <div class="l-input" v-if="config.editor">
-          <div class="m-editor">
-            <div id="editor"></div>
-            <input v-if="posts[current]" type="text" v-model="posts[current].title">
-            <textarea class="m-editor__textarea" v-if="posts[current]" class="textarea"
-            v-model="posts[current].content"></textarea>
+        <div class="l-input" v-show="config.editor">
+          <div class="m-editor" v-el:codemirror v-show="isCurrent">
+            <template v-if="isCurrent">
+              <input type="text" v-model="posts[current].title">
+            </template>
+            <!--<textarea class="m-editor__textarea" v-if="posts[current]" class="textarea" v-model="posts[current].content"></textarea>-->
           </div>
         </div>
-        <div class="l-preview" v-if="config.preview">
-          <div class="m-preview">
+        <div class="l-preview" v-show="config.preview">
+          <div class="m-preview" v-show="isCurrent">
             <h2 class="m-preview__title">
-              <template v-if="posts[current]">
-                <div v-bind:class="[posts[current].wip ? 'm-preview__wip' : 'm-preview__shipped']">
-                  <span>{{posts[current].title}}</span>
+              <template v-if="isCurrent">
+                <div v-bind:class="[currentPost.wip ? 'm-preview__wip' : 'm-preview__shipped']">
+                  <span>{{currentPost.title}}</span>
                 </div>
               </template>
             </h2>
@@ -70,7 +70,9 @@
     </div>
   </div>
 
-<!--<script src="lib/highlight.pack.js"></script>-->
+  <script src="./node_modules/codemirror/lib/codemirror.js"></script>
+  <script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
+  <script src="./node_modules/codemirror/addon/hint/show-hint.js"></script>
 <!--<script>-->
   <!--var $ = jQuery = require('jquery');-->
 <!--</script>-->
@@ -80,39 +82,28 @@
 <!--<script>-->
   <!--$('.textarea').esarea();-->
 <!--</script>-->
-<script src="./node_modules/codemirror/lib/codemirror.js"></script>
-<script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
-<script src="./node_modules/codemirror/addon/hint/show-hint.js"></script>
 
 <script>
-  var myTextArea = document.querySelector('textarea');
-  var editor = CodeMirror.fromTextArea(myTextArea, {
-    value: myTextArea.value
-  });
-  editor.addKeyMap({
-    "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
-  });
-
-  var Pos = CodeMirror.Pos;
-  var emojiList = Object.keys(emosa.getMap()).map((emoji)=> { return `:${emoji}:`});
-  editor.on("change", function(cm) {
-    CodeMirror.showHint(cm, function() {
-      var cur = cm.getCursor()
-      var token = cm.getTokenAt(cur);
-      var start = token.start;
-      var end = token.end;
-      var from = Pos(cur.line, start);
-      var to = Pos(cur.line, end);
-
-      if (token.string == ":") {
-        return {
-          list: emojiList,
-          from: from,
-          to: to
-        }
-      }
-    });
-  });
+//  var Pos = CodeMirror.Pos;
+//  var emojiList = Object.keys(emosa.getMap()).map((emoji)=> { return `:${emoji}:`});
+//  editor.on("change", function(cm) {
+//    CodeMirror.showHint(cm, function() {
+//      var cur = cm.getCursor()
+//      var token = cm.getTokenAt(cur);
+//      var start = token.start;
+//      var end = token.end;
+//      var from = Pos(cur.line, start);
+//      var to = Pos(cur.line, end);
+//
+//      if (token.string == ":") {
+//        return {
+//          list: emojiList,
+//          from: from,
+//          to: to
+//        }
+//      }
+//    });
+//  });
 </script>
 <script>require('electron-connect').client.create()</script>
 </body>

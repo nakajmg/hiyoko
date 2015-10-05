@@ -63,13 +63,38 @@ var code = "code";
       current: 1
     },
     computed: {
-      preview: function() {
-        if (this.current === undefined || this.current === null || this.current === '') {
-          return '';
+      preview() {
+        if (!this.isCurrent) {
+          return ''
         }
         var html = marked(this.posts[this.current].content);
 
         return emosa.replaceToUnicode(html);
+      },
+      isCurrent() {
+        return this.current === undefined || this.current === null || this.current === '' ? false : true;
+      },
+      currentPost() {
+        if (!this.isCurrent) {
+          return {
+            wip: false,
+            title: '',
+            content: ''
+          };
+        }
+        return this.posts[this.current];
+      },
+      currentContent() {
+        if (!this.isCurrent) {
+          return '';
+        }
+        return this.posts[this.current].content;
+      },
+      currentTitle() {
+        if (!this.isCurrent) {
+          return '';
+        }
+        return this.posts[this.current].title;
       }
     },
     beforeCompile() {
@@ -86,8 +111,31 @@ var code = "code";
       },
       toggleMenu(name) {
         this.config[name] = !this.config[name];
+      },
+      _onChangeCurrent() {
+        this.editor.setValue(this.currentContent);
       }
+    },
+    ready(){
+      var editor = CodeMirror(this.$els.codemirror, {
+        value: this.posts[this.current].content
+      });
+      editor.addKeyMap({
+        "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
+      });
+
+      editor.on("change", (cm) => {
+        if (this.isCurrent) {
+          this.posts[this.current].content = cm.getValue();
+        }
+      });
+
+      this.editor = editor;
+    },
+    watch: {
+      "current": "_onChangeCurrent"
     }
+
   });
 //  var PouchDB = require("pouchdb");
 //  var db = new PouchDB("mydb-idb");
