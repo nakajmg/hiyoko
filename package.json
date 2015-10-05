@@ -4,20 +4,25 @@
   "description": ".",
   "main": "main.js",
   "scripts": {
+    "postinstall": "cd node_modules/pouchdb/node_modules/leveldown && HOME=~/.electron-gyp node-gyp rebuild --target=0.33.4 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
     "start": "electron ."
   },
   "author": "nakajmg",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.10.2",
+    "codemirror": "mizchi/codemirror",
+    "emosa": "^0.1.0",
     "font-awesome": "^4.4.0",
     "fs-extra": "^0.24.0",
     "highlight.js": "^8.8.0",
+    "isomorphic-fetch": "^2.1.1",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "marked": "^0.3.5",
     "moment": "^2.10.6",
-    "superagent": "^1.4.0",
+    "pouchdb": "^4.0.3",
+    "qs": "^5.1.0",
     "vue": "^1.0.0-beta.3"
   },
   "devDependencies": {

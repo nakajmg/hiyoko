@@ -1,7 +1,10 @@
+var emosa = require("emosa");
 (function() {
   var Vue = require("vue");
   var hljs = require("highlight.js");
   var marked = require("marked");
+
+
   marked.setOptions({
     highlight:function(code, lang, callback) {
       if (lang && hljs.getLanguage(lang)) {
@@ -33,10 +36,12 @@
 var code = "code";
 \`\`\`
 
-|aaa|ggg|
+|table|content|
 |---|---|
-|hoge|hoge|
-|hoge|hoge|
+|:horse:uma|umai:angel:|
+|:bird:tori|(\\\\( ⁰⊖⁰)/)|
+
+:+1::pray::bow::open_hands:
 `
     },
     {
@@ -63,7 +68,8 @@ var code = "code";
           return '';
         }
         var html = marked(this.posts[this.current].content);
-        return html;
+
+        return emosa.replaceToUnicode(html);
       }
     },
     beforeCompile() {
@@ -83,5 +89,13 @@ var code = "code";
       }
     }
   });
+//  var PouchDB = require("pouchdb");
+//  var db = new PouchDB("mydb-idb");
+//  var websqlDB = new PouchDB("mydb-websql", {adapter: "websql"});
+//  var levelDB = new PouchDB("mydb-leveldb");
+//
+//  console.log(db.adapter);
+//  console.log(websqlDB.adapter);
+//  console.log(levelDB.adapter);
 
 })();
