@@ -1,0 +1,28 @@
+.m-button {
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 1.33;
+  border-radius: 4px;
+  width: 140px;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1px solid rgba(0,0,0,0.1);
+  background-color: #0a9b94;
+  color: white;
+  box-shadow: rgba(255,255,255,0.4) 0 1px 0 inset;
+  &:hover {
+    background-color: #08837d;
+  }
+
+  &[disabled] {
+    background-color: #EEE;
+    color: rgba(60,74,96,0.5);
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: white 0 1px 0 inset;
+
+    &:hover {
+      color: rgba(60,74,96,0.7);
+      text-decoration: none;
+    }
+  }
+}

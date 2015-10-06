@@ -46,12 +46,15 @@ var emosa = require("emosa");
         user: "nakajmg",
         team: "pxgrid",
         api: "https://api.esa.io/v1/teams/",
-        token: require("./token")
+        token: require("./token"),
+        url: "",
+        isValidToken: false
       },
       config: {
         editor: false,
-        preview: true,
-        posts: true,
+        preview: false,
+        posts: false,
+        settings: false,
         toolbarPos: 'bottom'
       },
       posts: [],
@@ -360,6 +363,13 @@ var emosa = require("emosa");
         }
       },
 
+      _showSettings() {
+        this.$els.env.show();
+      },
+      _hideSettings() {
+        this.$els.env.close();
+      },
+
       _showLoader() {
         if (this.$els.loader.getAttribute("open") === null) {
           this.$els.loader.showModal();
@@ -438,6 +448,8 @@ var emosa = require("emosa");
         .finally(() => {
           this.isLoading = false;
         });
+
+//      this.$els.env.show();
     }
   });
 

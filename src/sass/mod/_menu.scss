@@ -39,6 +39,11 @@
         color: rgba(255,255,255,0.5);
       }
     }
+
+    &[disabled] {
+      cursor: default;
+      pointer-events: none;
+    }
   }
   &__item--current {
     a {
@@ -54,6 +59,12 @@
       color: #fff;
       padding-top: 0;
       height: 100%;
+    }
+    &[disabled] {
+      a {
+        opacity: .3;
+        color: rgba(0,0,0,0.5);
+      }
     }
   }
 

@@ -1,0 +1,58 @@
+.m-env {
+  border: none;
+  width: calc(100% - 80px);
+  height: 100%;
+  top: 0;
+  left: 80px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &__inputs {
+    margin: auto;
+    width: 800px;
+    text-align: center;
+  }
+  &__item {
+    display: flex;
+    max-width: 100%;
+    font-weight: bold;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  &__label {
+    flex-basis: 200px;
+    text-align: right;
+    margin-right: 20px;
+  }
+
+  &__input {
+    flex-grow: 1;
+    display: block;
+    width: 100%;
+    height: 36px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3c4a60;
+    background-color: rgba(0,0,0,0.1);
+    background-image: none;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    &:focus {
+      background: white;
+      outline: 0;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(102,175,233,0.6);
+    }
+  }
+  &__info {
+    font-size: 12px;
+    color: rgba(0,0,0,.5);
+  }
+  &__btns {
+    margin-top: 10px;
+  }
+}
