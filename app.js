@@ -51,8 +51,8 @@ var emosa = require("emosa");
         isValidToken: false
       },
       config: {
-        editor: false,
-        preview: false,
+        editor: true,
+        preview: true,
         posts: false,
         settings: false,
         toolbarPos: 'bottom'
@@ -71,16 +71,13 @@ var emosa = require("emosa");
         return this.current === undefined || this.current === null || this.current === '' ? false : true;
       },
       currentPost() {
-        if (!this.isCurrent) {
-          return DEFAULTS_POST;
-        }
-        return this.posts[this.current];
+        return this.isCurrent ? this.posts[this.current] : {};
       },
       currentBody() {
-        if (!this.isCurrent) {
-          return '';
-        }
-        return this.posts[this.current].body_md;
+        return this.isCurrent ? this.posts[this.current].body_md : "";
+      },
+      currentName() {
+        return this.isCurrent ? this.posts[this.current].name : "";
       },
       isPosts() {
         return this.posts.length !== 0;
@@ -90,7 +87,7 @@ var emosa = require("emosa");
     /* watch */
     watch: {
       "isLoading": "_onChangeLoading",
-      "current": "_setPreview"
+      "current": "_onChangeCurrent"
     },
 
     /*  */
@@ -414,6 +411,9 @@ var emosa = require("emosa");
           }, 2000)
         }
       },
+      _onChangeCurrent() {
+        this._setPreview();
+      },
 
       checkAccessToken() {
         this.GET("")
@@ -470,6 +470,9 @@ var emosa = require("emosa");
           setPreview();
         }, {deep: true});
       },
+      _domfy() {
+        $("textarea").esarea();
+      },
       _initDB() {
         return new Promise((resolve, reject) => {
           var _id = "posts";
@@ -514,6 +517,7 @@ var emosa = require("emosa");
       this.isLoading = true;
       this._initialize()
         .then(this._watchify)
+        .then(this._domfy)
         .then(() => {
           console.log("initilize succeed");
         })

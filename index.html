@@ -73,11 +73,11 @@
         </div>
 
         <div class="l-input" v-show="config.editor">
-          <div class="m-editor" v-el:codemirror v-show="isCurrent">
-            <template v-if="isCurrent">
-              <input type="text" v-model="posts[current].name">
-              <textarea class="m-editor__textarea" v-model="posts[current].body_md"></textarea>
-            </template>
+          <div class="m-editor" v-show="isCurrent">
+            <!--<template v-if="isCurrent">-->
+              <input type="text" v-model="currentName">
+              <textarea v-el:editor class="m-editor__textarea" v-model="posts[current].body_md"></textarea>
+            <!--</template>-->
           </div>
         </div>
 
@@ -131,7 +131,11 @@
     </dialog>
   </div>
   <!--<button id="fetch">fetch</button>-->
-
+<script>
+  var $ = jQuery = require("jquery");
+</script>
+<script src="./lib/jquery.selection.js"></script>
+<script src="./lib/jquery.esarea.js"></script>
 <script src="./node_modules/codemirror/lib/codemirror.js"></script>
 <script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
 <script src="./node_modules/pouchdb/dist/pouchdb.js"></script>
