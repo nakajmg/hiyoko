@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>(⁰⊖⁰)</title>
+    <title>(\( ⁰⊖⁰)/) hiyoko</title>
     <style>
       [v-cloak] {
         display: none;
@@ -58,13 +58,13 @@
               <a v-on:click="openUrl"><i class="fa fa-external-link"></i></a>
             </span>
             <span class="m-toolBtn">
-              <a v-on:click="sync"><i class="fa fa-refresh"></i></a>
+              <a v-on:click="syncPost"><i class="fa fa-refresh"></i></a>
             </span>
           </template>
 
           <div v-if="isCurrent" class="m-publishBtn">
-            <button v-on:click="publish(true)" class="m-publishBtn__wip" v-bind:class="{'state-current': currentPost.wip}">Save as WIP</button>
-            <button v-on:click="publish(false)" class="m-publishBtn__ship" v-bind:class="{'state-current': !currentPost.wip}">Ship It!</button>
+            <button v-on:click="publishPost(true)" class="m-publishBtn__wip" v-bind:class="{'state-current': currentPost.wip}">Save as WIP</button>
+            <button v-on:click="publishPost(false)" class="m-publishBtn__ship" v-bind:class="{'state-current': !currentPost.wip}">Ship It!</button>
           </div>
         </div>
 
@@ -72,6 +72,7 @@
           <div class="m-editor" v-el:codemirror v-show="isCurrent">
             <template v-if="isCurrent">
               <input type="text" v-model="posts[current].name">
+              <textarea class="m-editor__textarea" v-model="posts[current].body_md"></textarea>
             </template>
           </div>
         </div>

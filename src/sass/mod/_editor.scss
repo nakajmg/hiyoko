@@ -25,6 +25,7 @@
   }
 
   &__textarea , .CodeMirror {
+    white-space: nowrap;
     font-family: inherit;
     background-color: rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.2);
@@ -37,7 +38,6 @@
     padding: 1em;
     width: 100%;
     height: calc(100% - 70px);
-    //height: 100%;
     display: block;
     box-sizing: border-box;
     outline: none;

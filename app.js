@@ -22,6 +22,8 @@ var emosa = require("emosa");
     }
   });
 
+  var DELAY = 300;
+
   var DEFAULTS_POST = {
     name: "New Post",
     body_md: "( ⁰⊖⁰)",
@@ -53,21 +55,14 @@ var emosa = require("emosa");
         toolbarPos: 'bottom'
       },
       posts: [],
-      current: null
+      current: null,
+      preview: ''
     },
 
     /* computed */
     computed: {
       baseUrl() {
         return `${this.env.api}${this.env.team}/`;
-      },
-      preview() {
-        if (!this.isCurrent) {
-          return ''
-        }
-        var html = marked(this.posts[this.current].body_md);
-
-        return emosa.replaceToUnicode(html);
       },
       isCurrent() {
         return this.current === undefined || this.current === null || this.current === '' ? false : true;
@@ -84,12 +79,6 @@ var emosa = require("emosa");
         }
         return this.posts[this.current].body_md;
       },
-      currentTitle() {
-        if (!this.isCurrent) {
-          return '';
-        }
-        return this.posts[this.current].title;
-      },
       isPosts() {
         return this.posts.length !== 0;
       }
@@ -97,58 +86,51 @@ var emosa = require("emosa");
 
     /* watch */
     watch: {
-      "current": "_onChangeCurrent",
-        "config.editor": "_refreshEditor",
-        "isLoading": "_onChangeLoading"
+      "isLoading": "_onChangeLoading",
+      "current": "_setPreview"
     },
 
     /*  */
     events: {
       "notify": "_onNotify",
-      "update:current:body": "_onUpdateCurrentBody"
+      "save": "_onSave"
     },
 
     /* methods */
     methods: {
-      _onNotify(notify) {
-        this._showNotify();
-        this.notifications.push(notify);
-        setTimeout(() => {
-          this.notifications.splice(0, 1);
-        }, 2000)
+      save() {
+        var _id = "posts";
+        var _posts = { posts: toJSON(this.posts) };
+        db.get(_id)
+          .then((doc) => {
+            return db.put(_posts, _id, doc._rev)
+          });
       },
-      closeNotify($index) {
-        this.notifications.splice($index, 1);
-      },
-      _onUpdateCurrentBody() {
-        this.posts[this.current].body_md = this.editor.getValue();
-      },
-      changePost($index) {
-        this.current = $index;
+
+      /* display */
+      _setPreview() {
+        this.preview = this._renderMarkdown(this.currentBody);
       },
       toggleMenu(name) {
         this.config[name] = !this.config[name];
       },
+      closeNotify($index) {
+        this.notifications.splice($index, 1);
+      },
+      changePost($index) {
+        this.current = $index;
+      },
+
+
+      /* post */
       createNewPost() {
         var defaults = _.assign({}, DEFAULTS_POST, {user: this.env.user, created_at: moment().tz("Asia/Tokyo").format()});
-        this.save(this.posts.length, defaults);
+        this.posts.$set(this.posts.length, defaults);
         this.current = this.posts.length - 1;
         this.config.editor = true;
         this.config.preview = true;
       },
-      removePost($index) {
-        if ($index === this.current) {
-          this.current = null;
-        }
-        else if($index < this.current) {
-          this.current = this.current - 1;
-        }
-        this.posts.splice($index, 1);
-        this.$emit("notify", {
-          message: "記事を削除しました。"
-        });
-      },
-      publish(wip) {
+      publishPost(wip) {
         var post = toJSON(this.currentPost);
         // コミットメッセージを入力させる
         post.message = "";
@@ -168,7 +150,7 @@ var emosa = require("emosa");
               });
               return;
             }
-            this.save(this.current, json);
+            this.posts.$set(this.current, json);
             var notify = "";
             switch(method) {
               case "POST":
@@ -197,9 +179,10 @@ var emosa = require("emosa");
       deletePost($index) {
         var post = toJSON(this.posts[$index]);
 
+        // リモートから削除するか選択させる
         return this.DELETE(post)
           .then(() => {
-            this.removePost($index);
+            this._removePost($index);
           })
           .catch((err) => {
             this.$emit("notify", {
@@ -212,15 +195,19 @@ var emosa = require("emosa");
             this.isLoading = false;
           });
       },
-      openUrl(url) {
-        if (_.isString(url)) {
-          require("shell").openExternal(url);
+      _removePost($index) {
+        if ($index === this.current) {
+          this.current = null;
         }
-        else if (this.currentPost && this.currentPost.url) {
-          require("shell").openExternal(this.currentPost.url);
+        else if($index < this.current) {
+          this.current = this.current - 1;
         }
+        this.posts.splice($index, 1);
+        this.$emit("notify", {
+          message: "記事を削除しました。"
+        });
       },
-      sync() {
+      syncPost() {
         var post = toJSON(this.currentPost);
         if (post.number) {
           return this.GET(`posts/${post.number}`)
@@ -234,7 +221,7 @@ var emosa = require("emosa");
                 });
               }
               if (json.revision_number > post.revision_number) {
-                this.save(this.current, json);
+                this.posts.$set(this.current, json);
                 this.$emit("notify", {
                   message: "記事を同期しました。"
                 });
@@ -244,7 +231,7 @@ var emosa = require("emosa");
                 var j = moment(json.updated_at).tz("Asia/Tokyo").unix();
                 if (p > j) {
                   // remoteをupdateするか確認出す
-                  return this.publish(post.wip)
+                  return this.publishPost(post.wip)
                 }
               }
             })
@@ -272,20 +259,28 @@ var emosa = require("emosa");
             });
         }
       },
-      PATCH(endpoint, post) {
-        var body = {
-          name: post.name,
-          body_md: post.body_md,
-          tags: post.tags,
-          category: post.category,
-          wip: post.wip,
-          message: post.message,
-          original_revision: {
-            number: post.revision_number,
-            user: post.updated_by.screen_name
-          }
-        };
-        return this.POST(`${endpoint}/${post.number}`, body, "patch")
+
+
+      /* request */
+      GET(endpoint) {
+        this.isLoading = true;
+
+        return new Promise((resolve, reject) => {
+          fetch(`${this.baseUrl}${endpoint}`, {
+            method: "get",
+            headers: {
+              "Authorization": `Bearer ${this.env.token}`,
+              "Content-Type": "application/json"
+            }
+          })
+            .then((res) => {
+              if (res.status === 404) {
+                reject(res);
+              }
+              resolve(res.json());
+            })
+            .catch(reject);
+        });
       },
       POST(endpoint, post, method) {
         this.isLoading = true;
@@ -310,6 +305,21 @@ var emosa = require("emosa");
           .catch(reject);
         });
       },
+      PATCH(endpoint, post) {
+        var body = {
+          name: post.name,
+          body_md: post.body_md,
+          tags: post.tags,
+          category: post.category,
+          wip: post.wip,
+          message: post.message,
+          original_revision: {
+            number: post.revision_number,
+            user: post.updated_by.screen_name
+          }
+        };
+        return this.POST(`${endpoint}/${post.number}`, body, "patch")
+      },
       DELETE(post) {
         this.isLoading = true;
 
@@ -328,38 +338,28 @@ var emosa = require("emosa");
           .catch(reject);
         });
       },
-      GET(endpoint) {
-        this.isLoading = true;
 
-        return new Promise((resolve, reject) => {
-          fetch(`${this.baseUrl}${endpoint}`, {
-            method: "get",
-            headers: {
-              "Authorization": `Bearer ${this.env.token}`,
-              "Content-Type": "application/json"
-            }
-          })
-          .then((res) => {
-            if (res.status === 404) {
-              reject(res);
-            }
-            resolve(res.json());
-          })
-          .catch(reject);
-        });
-      },
 
-      save($index, post) {
-        post.updated_at = moment().tz("Asia/Tokyo").format();
-        this.posts.$set($index, post);
+      /* util */
+      _renderMarkdown(md) {
+        var html = this._marked(md);
+        return this._emosa(html);
       },
-      _refreshEditor() {
-        if (this.config.editor) {
-          _.defer(() => {
-            this.editor.refresh();
-          });
+      _marked(md) {
+        return marked(md);
+      },
+      _emosa(html) {
+        return emosa.replaceToUnicode(html);
+      },
+      openUrl(url) {
+        if (_.isString(url)) {
+          require("shell").openExternal(url);
+        }
+        else if (this.currentPost && this.currentPost.url) {
+          require("shell").openExternal(this.currentPost.url);
         }
       },
+
       _showLoader() {
         if (this.$els.loader.getAttribute("open") === null) {
           this.$els.loader.showModal();
@@ -370,66 +370,74 @@ var emosa = require("emosa");
           this.$els.loader.close();
         }
       },
+
       _showNotify() {
         this.$els.notify.show();
       },
       _hideNotify() {
         this.$els.notify.close();
       },
-      _onChangeLoading() {
-        if (this.isLoading) {
-          this._showLoader();
-        }
-        else {
-          this._hideLoader();
-        }
-      },
-      _onChangeCurrent() {
-        this.editor.setValue(this.currentBody);
-        this._refreshEditor();
-      },
-      _setupCodeMirror() {
-        var value = this.currentBody;
-        var editor = CodeMirror(this.$els.codemirror, {
-          value: value
-        });
-        editor.addKeyMap({
-          "Enter": function(cm) { return cm.execCommand("newlineAndIndentContinueMarkdownList"); }
-        });
 
-        editor.on("change", (cm) => {
-          if (this.isCurrent) {
-            this.$emit("update:current:body");
-          }
-        });
-        this.editor = editor;
+
+      /* event handler */
+      _onChangeLoading() {
+        this.isLoading ? this._showLoader() : this._hideLoader();
       },
+      _onSave() {
+        this.save();
+      },
+      _onNotify(notify) {
+        this._showNotify();
+        this.notifications.push(notify);
+        setTimeout(() => {
+          this.notifications.splice(0, 1);
+        }, 2000)
+      },
+
+
+      /* initialize */
       _setupDB() {
-        var _id = "posts";
-        db.get(_id)
-          .then((posts) => {
-            this.$set(_id, posts.posts);
-            this.$watch(_id, (value) => {
-              var _posts = { posts: toJSON(this.posts) };
-              db.get(_id)
+        return new Promise((resolve, reject) => {
+          var _id = "posts";
+          db.get(_id)
+            .then((posts) => {
+              this.$set(_id, posts.posts);
+              resolve();
+            })
+            .catch((err) => {
+              return db.put({_id: _id, posts: []})
                 .then((doc) => {
-                  return db.put(_posts, _id, doc._rev)
+                  this._setupDB();
                 });
-            }, {deep: true});
-          })
-          .catch((err) => {
-            db.put({_id: _id, posts: []})
-              .then((doc) => {
-                this._setupDB();
-              });
-          });
+            });
+        });
+      },
+      _watchify() {
+        var _id = "posts";
+        var setPreview = _.debounce(()=> {
+            this._setPreview();
+          }, DELAY);
+
+        var save = _.debounce(()=> {
+            this.save();
+          }, DELAY);
+
+        this.$watch(_id, () => {
+          save();
+          setPreview();
+        }, {deep: true});
       }
     },
 
+
     /* lifecycle */
     ready(){
-      this._setupCodeMirror();
-      this._setupDB();
+      this.isLoading = true;
+      this._setupDB()
+        .then(this._watchify)
+        .finally(() => {
+          this.isLoading = false;
+        });
     }
   });
 
