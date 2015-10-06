@@ -99,15 +99,15 @@
       <i class="fa fa-spin fa-spinner"></i>
     </dialog>
     <dialog class="m-notify" v-el:notify>
-      <div class="notify__heading"></div>
+      <div class="m-notify__heading"></div>
       <div>
-        <p transition="notify" class="notify__message" v-for="notify in notifications" :class="{'state-warning': notify.warning, 'state-error': notify.error, 'state-wip': notify.wip}" v-on:click="closeNotify($index)">
+        <p transition="m-notify" class="m-notify__message" v-for="notify in notifications" :class="{'state-warning': notify.warning, 'state-error': notify.error, 'state-wip': notify.wip}" v-on:click="closeNotify($index)">
           <i class="fa"></i><span>{{notify.message}}</span>
         </p>
       </div>
     </dialog>
-    <dialog class="m-env" v-el:env v-show="config.settings">
 
+    <dialog class="m-env" v-el:env v-show="config.settings">
       <div class="m-env__inputs">
         <h2>Environment Settings</h2>
         <label class="m-env__item">
@@ -124,8 +124,8 @@
         </label>
         <span class="m-env__info">アクセストークンは、ユーザの管理画面(https://[team].esa.io/user/tokens)から発行できます。</span>
         <div class="m-env__btns">
-          <button class="m-button" :disabled="!(env.team && env.token)">Check Token</button>
-          <button class="m-button" :disabled="!env.isValidToken">Save</button>
+          <button class="m-button" :disabled="!(env.team && env.token)" v-on:click="checkAccessToken"><i class="fa fa-check"></i>Check Token</button>
+          <button class="m-button --yellow" :disabled="!env.isValidToken">OK</button>
         </div>
       </div>
     </dialog>

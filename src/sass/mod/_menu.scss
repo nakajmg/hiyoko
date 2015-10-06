@@ -6,6 +6,9 @@
   color: #fff;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
   &__item {
     cursor: pointer;
     a {
@@ -66,6 +69,12 @@
         color: rgba(0,0,0,0.5);
       }
     }
+  }
+
+  &__item:last-of-type {
+    align-self: flex-end;
+    position: relative;
+    bottom: 0;
   }
 
   &__newPost {

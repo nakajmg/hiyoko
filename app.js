@@ -43,10 +43,10 @@ var emosa = require("emosa");
       isLoading: false,
       notifications: [],
       env: {
-        user: "nakajmg",
-        team: "pxgrid",
+        user: "",
+        team: "",
         api: "https://api.esa.io/v1/teams/",
-        token: require("./token"),
+        token: "",
         url: "",
         isValidToken: false
       },
@@ -276,13 +276,21 @@ var emosa = require("emosa");
               "Content-Type": "application/json"
             }
           })
-            .then((res) => {
-              if (res.status === 404) {
-                reject(res);
-              }
-              resolve(res.json());
-            })
-            .catch(reject);
+          .then((res) => {
+            if (res.status === 404) {
+              reject(res);
+            }
+            return res.json();
+          })
+          .then((json) => {
+            if (json.error) {
+              reject(json);
+            }
+            else {
+              resolve(json);
+            }
+          })
+          .catch(reject);
         });
       },
       POST(endpoint, post, method) {
@@ -399,14 +407,70 @@ var emosa = require("emosa");
       _onNotify(notify) {
         this._showNotify();
         this.notifications.push(notify);
-        setTimeout(() => {
-          this.notifications.splice(0, 1);
-        }, 2000)
+
+        if (notify.autoClose !== false) {
+          setTimeout(() => {
+            this.notifications.splice(0, 1);
+          }, 2000)
+        }
       },
 
+      checkAccessToken() {
+        this.GET("")
+          .then((json) => {
+            this.env.isValidToken = true;
+            this.env.url = json.url;
+            this.env.icon = json.icon;
+            this.saveEnv()
+              .then(() => {
+                this.$emit("notify", {
+                  message: "トークンを保存しました。"
+                });
+              });
+          })
+          .catch((err) => {
+            this.env.isValidToken = false;
+            this.env.url = "";
+            this.env.icon = "json.icon";
+            this.$emit("notify", {
+              message: "トークン・チーム名が正しくありません。",
+              error: true,
+              autoClose: false
+            });
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      },
+      saveEnv() {
+        var _id = "env";
+        return new Promise((resolve, reject) => {
+          return db.get(_id)
+            .then((env) => {
+              return db.put(toJSON(this.env), _id, env._rev)
+                .then(resolve);
+            })
+            .catch(reject)
+        });
+      },
 
       /* initialize */
-      _setupDB() {
+      _watchify() {
+        var _id = "posts";
+        var setPreview = _.debounce(()=> {
+            this._setPreview();
+          }, DELAY);
+
+        var save = _.debounce(()=> {
+            this.save();
+          }, DELAY);
+
+        this.$watch(_id, () => {
+          save();
+          setPreview();
+        }, {deep: true});
+      },
+      _initDB() {
         return new Promise((resolve, reject) => {
           var _id = "posts";
           db.get(_id)
@@ -422,34 +486,48 @@ var emosa = require("emosa");
             });
         });
       },
-      _watchify() {
-        var _id = "posts";
-        var setPreview = _.debounce(()=> {
-            this._setPreview();
-          }, DELAY);
-
-        var save = _.debounce(()=> {
-            this.save();
-          }, DELAY);
-
-        this.$watch(_id, () => {
-          save();
-          setPreview();
-        }, {deep: true});
+      _initEnv() {
+        return new Promise((resolve, reject) => {
+          var _id = "env";
+          db.get(_id)
+            .then((env) => {
+              this.$set(_id, env);
+              resolve();
+            })
+            .catch(() => {
+              var data = _.assign({}, {_id: _id}, toJSON(this.env));
+              return db.put(data)
+                .then(resolve);
+            })
+        });
+      },
+      _initialize() {
+        return Promise.all([
+            this._initDB(),
+            this._initEnv()
+          ]);
       }
     },
 
-
     /* lifecycle */
-    ready(){
+    ready() {
       this.isLoading = true;
-      this._setupDB()
+      this._initialize()
         .then(this._watchify)
+        .then(() => {
+          console.log("initilize succeed");
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$emit("notify", {
+            message: "初期化に失敗しました。",
+            error: true,
+            autoClose: false
+          })
+        })
         .finally(() => {
           this.isLoading = false;
         });
-
-//      this.$els.env.show();
     }
   });
 

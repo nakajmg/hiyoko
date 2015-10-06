@@ -1,4 +1,4 @@
-.notify {
+.m-notify {
   border: none;
   background-color: transparent;
   position: fixed;
@@ -6,11 +6,13 @@
   right: 10px;
   top: 10px;
   padding: 0;
+  z-index: 10;
 
   &[open] {
 
   }
   &__message {
+    cursor: pointer;
     transition: 0.5s ease-in;
     display: flex;
     align-items: center;

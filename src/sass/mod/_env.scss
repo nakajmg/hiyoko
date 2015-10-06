@@ -54,5 +54,8 @@
   }
   &__btns {
     margin-top: 10px;
+    .m-button + .m-button {
+      margin-left: 15px;
+    }
   }
 }

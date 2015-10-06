@@ -10,6 +10,11 @@
   background-color: #0a9b94;
   color: white;
   box-shadow: rgba(255,255,255,0.4) 0 1px 0 inset;
+
+  i {
+    margin-right: 5px;
+  }
+
   &:hover {
     background-color: #08837d;
   }
@@ -23,6 +28,16 @@
     &:hover {
       color: rgba(60,74,96,0.7);
       text-decoration: none;
+    }
+  }
+  &.--yellow {
+    color: #fff;
+    background-color: #f29600;
+    border-color: #f29600;
+    &:hover {
+      color: #fff;
+      background-color: #e99200;
+      border-color: #d38100;
     }
   }
 }
