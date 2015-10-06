@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="./node_modules/highlight.js/styles/github.css"/>
     <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="./node_modules/codemirror/lib/codemirror.css"/>
-    <link rel="stylesheet" href="./node_modules/codemirror/addon/hint/show-hint.css"/>
   </head>
 <body>
 
@@ -91,15 +90,24 @@
         </div>
       </div>
     </div>
-    <dialog class="loading" v-el:dialog>
+    <dialog class="loader" v-el:loader>
       <i class="fa fa-spin fa-spinner"></i>
+    </dialog>
+    <dialog class="notify" v-el:notify>
+      <div class="notify__heading"></div>
+      <div>
+        <p transition="notify" class="notify__message" v-for="notify in notifications" v-bind:class="{'state-warning': notify.warning, 'state-error': notify.error, 'state-wip': notify.wip}" v-on:click="closeNotify($index)">
+          <i class="fa"></i><span>{{notify.message}}</span>
+        </p>
+      </div>
     </dialog>
   </div>
   <!--<button id="fetch">fetch</button>-->
 
 <script src="./node_modules/codemirror/lib/codemirror.js"></script>
 <script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
-<script src="./node_modules/codemirror/addon/hint/show-hint.js"></script>
+<script src="./node_modules/pouchdb/dist/pouchdb.js"></script>
+<script src="./node_modules/pouchdb-find/dist/pouchdb.find.min.js"></script>
 <script src="app.js"></script>
 <script>require('electron-connect').client.create()</script>
 </body>

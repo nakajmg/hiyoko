@@ -1,0 +1,10 @@
+.loader {
+  border: none;
+  background-color: transparent;
+  &[open] {
+    i {
+      color: #fff;
+      font-size: 80px;
+    }
+  }
+}

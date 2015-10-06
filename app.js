@@ -3,7 +3,6 @@ var emosa = require("emosa");
   var Vue = require("vue");
   var hljs = require("highlight.js");
   var marked = require("marked");
-  var PouchDB = require("pouchdb");
   db = new PouchDB("mydb");
   var fetch = require("isomorphic-fetch");
   var Promise = require("bluebird");
@@ -40,6 +39,7 @@ var emosa = require("emosa");
     el: "#app",
     data: {
       isLoading: false,
+      notifications: [],
       env: {
         user: "nakajmg",
         team: "pxgrid",
@@ -102,8 +102,27 @@ var emosa = require("emosa");
         "isLoading": "_onChangeLoading"
     },
 
+    /*  */
+    events: {
+      "notify": "_onNotify",
+      "update:current:body": "_onUpdateCurrentBody"
+    },
+
     /* methods */
     methods: {
+      _onNotify(notify) {
+        this._showNotify();
+        this.notifications.push(notify);
+        setTimeout(() => {
+          this.notifications.splice(0, 1);
+        }, 2000)
+      },
+      closeNotify($index) {
+        this.notifications.splice($index, 1);
+      },
+      _onUpdateCurrentBody() {
+        this.posts[this.current].body_md = this.editor.getValue();
+      },
       changePost($index) {
         this.current = $index;
       },
@@ -118,8 +137,16 @@ var emosa = require("emosa");
         this.config.preview = true;
       },
       removePost($index) {
-        if ($index === this.current) this.current = null;
+        if ($index === this.current) {
+          this.current = null;
+        }
+        else if($index < this.current) {
+          this.current = this.current - 1;
+        }
         this.posts.splice($index, 1);
+        this.$emit("notify", {
+          message: "記事を削除しました。"
+        });
       },
       publish(wip) {
         var post = toJSON(this.currentPost);
@@ -130,10 +157,37 @@ var emosa = require("emosa");
 
         return this[method]("posts", post)
           .then((json) => {
-            console.log(json);
+            if (json.error === "not_found") {
+              // 投稿が削除されてるから再投稿するか確認する
+              this.currentPost.$delete("number");
+              this.currentPost.$delete("url");
+              this.currentPost.$delete("revision_number");
+              this.$emit("notify", {
+                message: "記事の更新に失敗しました。記事が見つかりません。",
+                error: true
+              });
+              return;
+            }
             this.save(this.current, json);
+            var notify = "";
+            switch(method) {
+              case "POST":
+                notify += "記事を作成しました。";
+                break;
+              case "PATCH":
+                notify += "記事を更新しました。";
+                break;
+            }
+            this.$emit("notify", {
+              message: notify,
+              wip: json.wip
+            });
           })
           .catch((err) => {
+            this.$emit("notify", {
+              message: "記事の作成・更新に失敗しました。",
+              error: true
+            });
             console.log(err);
           })
           .finally(() => {
@@ -148,6 +202,10 @@ var emosa = require("emosa");
             this.removePost($index);
           })
           .catch((err) => {
+            this.$emit("notify", {
+              message: "記事の削除に失敗しました。",
+              error: true
+            });
             console.log(err);
           })
           .finally(() => {
@@ -167,8 +225,19 @@ var emosa = require("emosa");
         if (post.number) {
           return this.GET(`posts/${post.number}`)
             .then((json) => {
+              console.log(json);
+              if (!json) {
+                debugger
+                return this.$emit("notify", {
+                  message: "記事の同期に失敗しました。",
+                  error: true
+                });
+              }
               if (json.revision_number > post.revision_number) {
                 this.save(this.current, json);
+                this.$emit("notify", {
+                  message: "記事を同期しました。"
+                });
               }else {
                 console.log(post.updated_at, json.updated_at);
                 var p = moment(post.updated_at).tz("Asia/Tokyo").unix();
@@ -177,6 +246,25 @@ var emosa = require("emosa");
                   // remoteをupdateするか確認出す
                   return this.publish(post.wip)
                 }
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              if (err.status === 404) {
+                this.currentPost.$delete("number");
+                this.currentPost.$delete("url");
+                this.currentPost.$delete("revision_number");
+
+                this.$emit("notify", {
+                  message: "記事の同期に失敗しました。記事が見つかりません。",
+                  error: true
+                });
+              }
+              else{
+                this.$emit("notify", {
+                  message: "記事の同期に失敗しました。",
+                  error: true
+                });
               }
             })
             .finally(()=> {
@@ -252,6 +340,9 @@ var emosa = require("emosa");
             }
           })
           .then((res) => {
+            if (res.status === 404) {
+              reject(res);
+            }
             resolve(res.json());
           })
           .catch(reject);
@@ -270,14 +361,20 @@ var emosa = require("emosa");
         }
       },
       _showLoader() {
-        if (this.$els.dialog.getAttribute("open") === null) {
-          this.$els.dialog.showModal();
+        if (this.$els.loader.getAttribute("open") === null) {
+          this.$els.loader.showModal();
         }
       },
       _hideLoader() {
-        if (this.$els.dialog.getAttribute("open") !== null) {
-          this.$els.dialog.close();
+        if (this.$els.loader.getAttribute("open") !== null) {
+          this.$els.loader.close();
         }
+      },
+      _showNotify() {
+        this.$els.notify.show();
+      },
+      _hideNotify() {
+        this.$els.notify.close();
       },
       _onChangeLoading() {
         if (this.isLoading) {
@@ -302,17 +399,16 @@ var emosa = require("emosa");
 
         editor.on("change", (cm) => {
           if (this.isCurrent) {
-            this.posts[this.current].body_md = cm.getValue();
+            this.$emit("update:current:body");
           }
         });
         this.editor = editor;
       },
       _setupDB() {
-        db.get("posts")
+        var _id = "posts";
+        db.get(_id)
           .then((posts) => {
-            var _id = "posts";
             this.$set(_id, posts.posts);
-
             this.$watch(_id, (value) => {
               var _posts = { posts: toJSON(this.posts) };
               db.get(_id)
@@ -320,6 +416,12 @@ var emosa = require("emosa");
                   return db.put(_posts, _id, doc._rev)
                 });
             }, {deep: true});
+          })
+          .catch((err) => {
+            db.put({_id: _id, posts: []})
+              .then((doc) => {
+                this._setupDB();
+              });
           });
       }
     },

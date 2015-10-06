@@ -1,0 +1,83 @@
+.notify {
+  border: none;
+  background-color: transparent;
+  position: fixed;
+  left: initial;
+  right: 10px;
+  top: 10px;
+  padding: 0;
+
+  &[open] {
+
+  }
+  &__message {
+    transition: 0.5s ease-in;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #08837d;
+    border-radius: 2px;
+    background-color: #0a9b94;
+    color: #fff;
+    margin: 0 0 10px;
+    line-height: 1.2;
+    font-size: 14px;
+    word-break: break-all;
+
+    i {
+      color: rgba(255,255,255,0.5);
+      margin-right: 10px;
+      font-size: 24px;
+      &:before {
+        content: "\f0f3";
+      }
+    }
+
+    &.state-warning {
+      background-color: #f29600;
+      border-color: #f29600;
+
+      i:before {
+        content: "\f071";
+      }
+    }
+    &.state-error {
+      background-color: #E91313;
+      border-color: #D83650;
+      i {
+        margin-bottom: 1px;
+      }
+      i:before {
+        content: "\f00d";
+      }
+    }
+    &.state-wip {
+      span:before {
+        content: "WIP";
+        font-size: 12px;
+        padding: 3px 2px 2px;
+        background-color: rgba(255,255,255,.9);
+        color: #0a9b94;
+        margin-right: 8px;
+        border-radius: 2px;
+        display: inline-block;
+        //vertical-align: bottom;
+      }
+    }
+  }
+
+
+  &-transition {
+  }
+
+  &-enter {
+    opacity: 0;
+  }
+
+  &-leave {
+    opacity: 0;
+  }
+
+}
