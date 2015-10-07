@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="./dist/app.css"/>
     <link rel="stylesheet" href="./node_modules/highlight.js/styles/github.css"/>
     <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="./node_modules/codemirror/lib/codemirror.css"/>
   </head>
 <body>
 
@@ -74,10 +73,8 @@
 
         <div class="l-input" v-show="config.editor">
           <div class="m-editor" v-show="isCurrent">
-            <!--<template v-if="isCurrent">-->
-              <input type="text" v-model="posts[current].name">
-              <textarea v-el:editor class="m-editor__textarea" v-model="posts[current].body_md"></textarea>
-            <!--</template>-->
+            <input type="text" v-model="currentPost.name">
+            <textarea v-el:editor class="m-editor__textarea" v-model="currentPost.body_md"></textarea>
           </div>
         </div>
 
@@ -124,8 +121,8 @@
         </label>
         <span class="m-env__info">アクセストークンは、ユーザの管理画面(https://[team].esa.io/user/tokens)から発行できます。</span>
         <div class="m-env__btns">
-          <button class="m-button" :disabled="!(env.team && env.token)" v-on:click="checkAccessToken"><i class="fa fa-check"></i>Check Token</button>
-          <button class="m-button --yellow" :disabled="!env.isValidToken">OK</button>
+          <button class="m-button" :disabled="!(env.team && env.token)" v-on:click="checkAccessToken"><i class="fa fa-check"></i>Activation</button>
+          <button class="m-button --yellow --status" v-if="env.isValidToken">OK!!</button>
         </div>
       </div>
     </dialog>
@@ -136,11 +133,9 @@
 </script>
 <script src="./lib/jquery.selection.js"></script>
 <script src="./lib/jquery.esarea.js"></script>
-<script src="./node_modules/codemirror/lib/codemirror.js"></script>
-<script src="./node_modules/codemirror/addon/edit/continuelist.js"></script>
 <script src="./node_modules/pouchdb/dist/pouchdb.js"></script>
 <script src="./node_modules/pouchdb-find/dist/pouchdb.find.min.js"></script>
 <script src="app.js"></script>
-<!--<script>require('electron-connect').client.create()</script>-->
+<script>require('electron-connect').client.create()</script>
 </body>
 </html>

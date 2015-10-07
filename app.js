@@ -6,7 +6,6 @@
   var db = new PouchDB("mydb");
   var fetch = require("isomorphic-fetch");
   var Promise = require("bluebird");
-  var Qs = require("qs");
   var moment = require("moment-timezone");
   var _ = require("lodash");
 
@@ -58,7 +57,8 @@
       },
       posts: [],
       current: null,
-      preview: ''
+      preview: '',
+      currentPost: {}
     },
 
     /* computed */
@@ -68,9 +68,6 @@
       },
       isCurrent() {
         return this.current === undefined || this.current === null || this.current === '' ? false : true;
-      },
-      currentPost() {
-        return this.isCurrent ? this.posts[this.current] : {};
       },
       currentBody() {
         return this.isCurrent ? this.posts[this.current].body_md : "";
@@ -89,7 +86,7 @@
       "current": "_onChangeCurrent"
     },
 
-    /*  */
+    /* events */
     events: {
       "notify": "_onNotify",
       "save": "_onSave"
@@ -411,6 +408,7 @@
         }
       },
       _onChangeCurrent() {
+        this.currentPost = this.isCurrent ? this.posts[this.current] : {};
         this._setPreview();
       },
 
@@ -483,7 +481,7 @@
             .catch((err) => {
               return db.put({_id: _id, posts: []})
                 .then((doc) => {
-                  this._setupDB();
+                  this._initDB();
                 });
             });
         });
