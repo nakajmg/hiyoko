@@ -1,6 +1,6 @@
 {
   "name": "hiyoko",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "piyopiyo",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,6 @@
   "dependencies": {
     "bluebird": "^2.10.2",
     "emosa": "^0.1.0",
-    "font-awesome": "^4.4.0",
     "highlight.js": "^8.8.0",
     "isomorphic-fetch": "^2.1.1",
     "jquery": "^2.1.4",
@@ -27,7 +26,6 @@
   },
   "devDependencies": {
     "babel-core": "^5.8.25",
-    "browser-sync": "^2.9.8",
     "browserify": "^11.2.0",
     "electron-connect": "^0.3.3",
     "gulp": "^3.9.0",

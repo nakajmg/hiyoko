@@ -9,130 +9,20 @@
       }
     </style>
     <link rel="stylesheet" href="./dist/app.css"/>
-    <link rel="stylesheet" href="./node_modules/highlight.js/styles/github.css"/>
-    <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="./css/github.css"/>
+    <link rel="stylesheet" href="./css/font-awesome.min.css"/>
   </head>
 <body>
+<main id="app" v-cloak>
 
-  <div id="app" v-cloak>
-    <div class="l-main">
+</main>
 
-      <div class="l-menu">
-        <ul class="m-menu">
-          <li class="m-menu__item" v-on:click="createNewPost" :disabled="config.settings">
-            <a>
-              <span class="m-menu__newPost"></span>
-              <span>NEW POST</span>
-            </a>
-          </li>
-          <li class="m-menu__item" :class="{'m-menu__item--current': config.posts}" v-on:click="toggleMenu('posts')" :disabled="config.settings">
-            <a>
-              <i class="fa fa-file-text-o"></i><span>POSTS</span>
-            </a>
-          </li>
-          <li class="m-menu__item" :class="{'m-menu__item--current': config.settings}" v-on:click="toggleMenu('settings')">
-            <a>
-              <i class="fa fa-gear"></i><span>SETTING</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="l-posts" v-if="config.posts">
-        <ul class="m-postList">
-          <li v-if="!isPosts" class="m-postList__item m-postList__item--current"><a>(\( ⁰⊖⁰)/)  NO POST</a></li>
-          <li class="m-postList__item" v-for="post in posts" :class="{'m-postList__item--current': $index === current}" v-on:click="changePost($index)">
-            <a>{{post.name}}</a>
-            <span class="m-postList__trash" v-on:click="deletePost($index)"><i class="fa fa-trash"></i></span>
-          </li>
-        </ul>
-      </div>
-      <div class="l-md" :class="{'state-bottom': config.toolbarPos == 'bottom'}">
-
-        <div class="l-md__toolbar">
-          <label class="m-toolBtn">
-            <input type="checkbox" v-model="config.editor"><i class="fa fa-pencil"></i>
-          </label>
-          <label class="m-toolBtn">
-            <input type="checkbox" v-model="config.preview"><i class="fa fa-eye"></i>
-          </label>
-          <template v-if="currentPost && currentPost.url">
-            <span class="m-toolBtn">
-              <a v-on:click="openUrl"><i class="fa fa-external-link"></i></a>
-            </span>
-            <span class="m-toolBtn">
-              <a v-on:click="syncPost"><i class="fa fa-refresh"></i></a>
-            </span>
-          </template>
-
-          <div v-if="isCurrent" class="m-publishBtn">
-            <button v-on:click="publishPost(true)" class="m-publishBtn__wip" :class="{'state-current': currentPost.wip}">Save as WIP</button>
-            <button v-on:click="publishPost(false)" class="m-publishBtn__ship" :class="{'state-current': !currentPost.wip}">Ship It!</button>
-          </div>
-        </div>
-
-        <div class="l-input" v-show="config.editor">
-          <div class="m-editor" v-show="isCurrent">
-            <input type="text" v-model="currentPost.name">
-            <textarea v-el:editor class="m-editor__textarea" v-model="currentPost.body_md"></textarea>
-          </div>
-        </div>
-
-        <div class="l-preview" v-show="config.preview">
-          <div class="m-preview" v-show="isCurrent">
-            <h2 class="m-preview__title">
-              <template v-if="isCurrent">
-                <div :class="[currentPost.wip ? 'm-preview__wip' : 'm-preview__shipped']">
-                  <span>{{currentPost.name}}</span>
-                </div>
-              </template>
-            </h2>
-            {{{preview}}}
-          </div>
-        </div>
-      </div>
-    </div>
-    <dialog class="m-loader" v-el:loader>
-      <i class="fa fa-spin fa-spinner"></i>
-    </dialog>
-    <dialog class="m-notify" v-el:notify>
-      <div class="m-notify__heading"></div>
-      <div>
-        <p transition="m-notify" class="m-notify__message" v-for="notify in notifications" :class="{'state-warning': notify.warning, 'state-error': notify.error, 'state-wip': notify.wip}" v-on:click="closeNotify($index)">
-          <i class="fa"></i><span>{{notify.message}}</span>
-        </p>
-      </div>
-    </dialog>
-
-    <dialog class="m-env" v-el:env v-show="config.settings">
-      <div class="m-env__inputs">
-        <h2>Environment Settings</h2>
-        <label class="m-env__item">
-          <span class="m-env__label">Screen Name</span><input class="m-env__input" v-model="env.user">
-        </label>
-        <label class="m-env__item">
-          <span class="m-env__label">Team Name</span><input class="m-env__input" v-model="env.team">
-        </label>
-        <label class="m-env__item">
-          <span class="m-env__label">Team Url</span><input class="m-env__input" v-model="env.url" disabled>
-        </label>
-        <label class="m-env__item">
-          <span class="m-env__label">Access Token</span><input class="m-env__input" v-model="env.token">
-        </label>
-        <span class="m-env__info">アクセストークンは、ユーザの管理画面(https://[team].esa.io/user/tokens)から発行できます。</span>
-        <div class="m-env__btns">
-          <button class="m-button" :disabled="!(env.team && env.token)" v-on:click="checkAccessToken"><i class="fa fa-check"></i>Activation</button>
-          <button class="m-button --yellow --status" v-if="env.isValidToken">OK!!</button>
-        </div>
-      </div>
-    </dialog>
-  </div>
 <script>var $ = jQuery = require("./lib/jquery.min");</script>
 <script src="./lib/jquery.selection.js"></script>
 <script src="./lib/jquery.esarea.js"></script>
 <script src="./lib/pouchdb.min.js"></script>
 <script src="./lib/pouchdb.find.min.js"></script>
-<script src="./bundle.js"></script>
-<!--<script>require('electron-connect').client.create()</script>-->
+<script src="./app.v2.js"></script>
+<script>require('electron-connect').client.create()</script>
 </body>
 </html>
