@@ -88,12 +88,17 @@
 
     /* events */
     events: {
+      "refresh": "refresh",
       "notify": "_onNotify",
       "save": "_onSave"
     },
 
     /* methods */
     methods: {
+      refresh() {
+        this.currentPost = this.isCurrent ? this.posts[this.current] : {};
+        this._setPreview();
+      },
       save() {
         var _id = "posts";
         var _posts = { posts: toJSON(this.posts) };
@@ -170,6 +175,7 @@
           })
           .finally(() => {
             this.isLoading = false;
+            this.$emit("refresh");
           });
       },
       deletePost($index) {
@@ -189,6 +195,7 @@
           })
           .finally(() => {
             this.isLoading = false;
+            this.$emit("refresh");
           });
       },
       _removePost($index) {
@@ -252,6 +259,7 @@
             })
             .finally(()=> {
               this.isLoading = false;
+              this.$emit("refresh");
             });
         }
       },
