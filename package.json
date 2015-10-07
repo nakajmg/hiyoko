@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "postinstall": "cd node_modules/pouchdb/node_modules/leveldown && HOME=~/.electron-gyp node-gyp rebuild --target=0.33.4 --arch=x64 --dist-url=https://atom.io/download/atom-shell",
-    "start": "electron ."
+    "start": "electron .",
+    "bundle": "browserify app.js --im --no-detect-globals -o bundle.js"
   },
   "author": "nakajmg",
   "license": "MIT",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "babel-core": "^5.8.25",
     "browser-sync": "^2.9.8",
+    "browserify": "^11.2.0",
     "electron-connect": "^0.3.3",
     "gulp": "^3.9.0",
     "gulp-notify": "^2.2.0",
