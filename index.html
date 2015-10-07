@@ -75,7 +75,7 @@
         <div class="l-input" v-show="config.editor">
           <div class="m-editor" v-show="isCurrent">
             <!--<template v-if="isCurrent">-->
-              <input type="text" v-model="currentName">
+              <input type="text" v-model="posts[current].name">
               <textarea v-el:editor class="m-editor__textarea" v-model="posts[current].body_md"></textarea>
             <!--</template>-->
           </div>
@@ -141,6 +141,6 @@
 <script src="./node_modules/pouchdb/dist/pouchdb.js"></script>
 <script src="./node_modules/pouchdb-find/dist/pouchdb.find.min.js"></script>
 <script src="app.js"></script>
-<script>require('electron-connect').client.create()</script>
+<!--<script>require('electron-connect').client.create()</script>-->
 </body>
 </html>

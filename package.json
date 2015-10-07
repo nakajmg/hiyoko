@@ -11,10 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.10.2",
-    "codemirror": "mizchi/codemirror",
     "emosa": "^0.1.0",
     "font-awesome": "^4.4.0",
-    "fs-extra": "^0.24.0",
     "highlight.js": "^8.8.0",
     "isomorphic-fetch": "^2.1.1",
     "jquery": "^2.1.4",
@@ -24,7 +22,6 @@
     "moment-timezone": "^0.4.0",
     "pouchdb": "^4.0.3",
     "pouchdb-find": "^0.4.0",
-    "qs": "^5.1.0",
     "vue": "^1.0.0-beta.3"
   },
   "devDependencies": {

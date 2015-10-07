@@ -1,15 +1,14 @@
-var emosa = require("emosa");
 (function() {
+  var emosa = require("emosa");
   var Vue = require("vue");
   var hljs = require("highlight.js");
   var marked = require("marked");
-  db = new PouchDB("mydb");
+  var db = new PouchDB("mydb");
   var fetch = require("isomorphic-fetch");
   var Promise = require("bluebird");
   var Qs = require("qs");
   var moment = require("moment-timezone");
   var _ = require("lodash");
-  var token = require("./token");
 
   marked.setOptions({
     highlight:function(code, lang, callback) {
