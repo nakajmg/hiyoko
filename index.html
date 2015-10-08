@@ -14,6 +14,10 @@
   </head>
 <body>
 <main id="app" v-cloak>
+  <button @click="showDialogInput">show</button>
+  <button @click="showDialogConfirm">show</button>
+  <dialog-input v-ref:dialogInput></dialog-input>
+  <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
 
 </main>
 
@@ -22,7 +26,7 @@
 <script src="./lib/jquery.esarea.js"></script>
 <script src="./lib/pouchdb.min.js"></script>
 <script src="./lib/pouchdb.find.min.js"></script>
-<script src="./app.v2.js"></script>
+<script src="./app.js"></script>
 <script>require('electron-connect').client.create()</script>
 </body>
 </html>
