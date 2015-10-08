@@ -1,0 +1,14 @@
+.dialog-confirm {
+  border: 2px solid #08837d;
+  border-radius: 2px;
+  background: #fff;
+  color: #3c4a60;
+
+  &__heading {
+    margin-bottom: 10px;
+  }
+
+  .m-dialogButton + .m-dialogButton {
+    margin-left: 10px;
+  }
+}
