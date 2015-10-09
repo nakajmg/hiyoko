@@ -14,11 +14,25 @@
   </head>
 <body>
 <main id="app" v-cloak>
-  <button @click="showDialogInput">show</button>
-  <button @click="showDialogConfirm">show</button>
-  <dialog-input v-ref:dialogInput></dialog-input>
-  <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
+  <div class="l-main">
+    <div class="l-menu">
+      <menu-list></menu-list>
+    </div>
+    <div class="l-posts">
+      <post-list></post-list>
+    </div>
+  </div>
+  <!--<button @click="showDialogInput">show input</button>-->
+  <!--<button @click="showDialogConfirm">show confirm</button>-->
+  <!--<button @click="showDialogLoader">show loader</button>-->
+  <!--<button @click="addDialogNotify">add notify</button>-->
 
+  <!-- dialog components -->
+    <dialog-input v-ref:dialogInput></dialog-input>
+    <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
+    <dialog-loader v-ref:dialogLoader></dialog-loader>
+    <dialog-notify v-ref:dialogNotify></dialog-notify>
+  <!-- /dialog components -->
 </main>
 
 <script>var $ = jQuery = require("./lib/jquery.min");</script>
@@ -26,7 +40,7 @@
 <script src="./lib/jquery.esarea.js"></script>
 <script src="./lib/pouchdb.min.js"></script>
 <script src="./lib/pouchdb.find.min.js"></script>
-<script src="./app.js"></script>
+<script src="./app.v2.js"></script>
 <script>require('electron-connect').client.create()</script>
 </body>
 </html>

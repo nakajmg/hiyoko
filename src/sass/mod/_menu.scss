@@ -47,6 +47,11 @@
       cursor: default;
       pointer-events: none;
     }
+
+    &.--spacer {
+      flex-grow: 1;
+      cursor: default;
+    }
   }
   &__item--current {
     a {
