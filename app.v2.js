@@ -15,14 +15,36 @@
   Vue.component("dialog-confirm", require("./js/component/dialog-confirm"));
   Vue.component("dialog-loader", require("./js/component/dialog-loader"));
   Vue.component("dialog-notify", require("./js/component/dialog-notify"));
-
-  Vue.component("menu-list", require("./js/component/menu-list"));
-  Vue.component("post-list", require("./js/component/post-list"));
+  Vue.component("list-menu", require("./js/component/list-menu"));
+  Vue.component("list-post", require("./js/component/list-post"));
+  Vue.component("hiyoko-editor", require("./js/component/hiyoko-editor"));
+  Vue.component("hiyoko-preview", require("./js/component/hiyoko-preview"));
 
   /* create vm */
   vm = new Vue({
     el: "#app",
     data: {
+      current: null,
+      currentPost: null,
+      posts: [
+        { name: "hoge", body_md: "hogehoge"}
+      ],
+      config: {
+        delay: 100,
+        editor: true,
+        preview: true
+      },
+      menuState: {
+        newPost: true,
+        posts: false,
+        settings: false
+      }
+    },
+
+    watch: {
+      current() {
+        this.currentPost = this.posts[this.current];
+      }
     },
 
     /* events */
@@ -47,7 +69,37 @@
       },
       "add:dialog:notify"(notify) {
         this.$refs.dialognotify.$emit("add", notify);
+      },
+
+      "add:newpost"() {
+        var post = _.assign({}, require("./js/NEW_POST"));
+        post.created_at = this._getDate();
+        this.posts.$set(this.posts.length, post);
+        this.current = this.posts.length - 1;
+        this.config.editor = true;
+        this.config.preview = true;
+      },
+
+      "change:menu:toggle"(type) {
+        this.menuState[type] = !this.menuState[type];
+      },
+
+      "change:posts:current"($index) {
+        this.current = $index;
+      },
+      "remove:posts"($index) {
+        if ($index === this.current) {
+          this.current = null;
+        }
+        else if($index < this.current) {
+          this.current = this.current - 1;
+        }
+        this.posts.splice($index, 1);
+        this.addDialogNotify({
+          message: "記事を削除しました。"
+        });
       }
+
     },
 
     /* methods */
@@ -64,27 +116,13 @@
       },
       showDialogLoader() {
         this.$emit("show:dialog:loader");
-
-        setTimeout(() => {
-          this.$emit("close:dialog:loader");
-        }, 1000)
       },
-      addDialogNotify() {
-        this.$emit("add:dialog:notify", {
-          message: "通知テスト"
-        });
-        this.$emit("add:dialog:notify", {
-          message: "通知テスト",
-          error: true
-        });
-        this.$emit("add:dialog:notify", {
-          message: "通知テスト",
-          warning: true
-        });
-        this.$emit("add:dialog:notify", {
-          message: "通知テスト",
-          wip: true
-        });
+      addDialogNotify(notify) {
+        this.$emit("add:dialog:notify", notify);
+      },
+
+      _getDate() {
+        return moment().tz("Asia/Tokyo").format();
       }
     }
   });

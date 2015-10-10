@@ -89,7 +89,7 @@
     border-spacing: 0;
     margin: 20px 0;
     margin-bottom: 30px;
-    
+
     tr:nth-child(odd) td {
       background-color: #f9f9f9;
     }
@@ -118,6 +118,15 @@
     margin-top: 0;
     border-bottom: 3px solid rgba(0,0,0,0.1);
   }
+  .m-preview__tag {
+    font-size: 50%;
+    margin-right: 7px;
+  }
+  .m-preview__category {
+    font-size: 130%;
+    margin-right: 3px;
+  }
+
   .m-preview__wip {
     color: rgba(60,74,96,0.5);
     &:before {
@@ -141,6 +150,54 @@
     }
     span {
       opacity: 0.5;
+    }
+  }
+
+  .m-preview__icon {
+    margin: 25px auto 5px;
+    color: rgba(60,74,96,0.5);
+    width: 110px;
+    height: 110px;
+    border: 3px solid currentColor;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .c1 {
+      border: 4px solid currentColor;
+      width: 10px;
+      height: 15px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .c2 {
+      border: 2px solid currentColor;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin: 5px 5px 0;
+      display: flex;
+      align-items: center;
+      &:before {
+        content: "";
+        display: block;
+        border: 3px solid currentColor;
+        width: 100%;
+        margin: 2px;
+      }
+    }
+  }
+
+  .m-preview__empty {
+    margin-top: 5px;
+    text-align: center;
+    font-size: 300%;
+  }
+  &.state-empty {
+    opacity: .3;
+    color: rgba(60,74,96,0.5);
+    .m-preview__title {
+      border-bottom: 3px solid rgba(0,0,0, .3);
     }
   }
 }

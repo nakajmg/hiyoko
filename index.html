@@ -16,22 +16,36 @@
 <main id="app" v-cloak>
   <div class="l-main">
     <div class="l-menu">
-      <menu-list></menu-list>
+      <list-menu :state.sync="menuState"></list-menu>
     </div>
     <div class="l-posts">
-      <post-list></post-list>
+      <list-post
+        v-ref:listPosts
+        :posts.sync="posts"
+        :state="menuState.posts"
+        :current="current">
+      </list-post>
+    </div>
+    <div class="l-md state-bottom" >
+      <div class="l-md__toolbar">
+      </div>
+      <div class="l-input" v-show="config.editor && currentPost">
+        <hiyoko-editor
+          :delay="config.delay"
+          :current.sync="current"
+          :posts.sync="posts">
+        </hiyoko-editor>
+      </div>
+      <div class="l-preview" v-show="config.preview && currentPost">
+        <hiyoko-preview :post.sync="currentPost"></hiyoko-preview>
+      </div>
     </div>
   </div>
-  <!--<button @click="showDialogInput">show input</button>-->
-  <!--<button @click="showDialogConfirm">show confirm</button>-->
-  <!--<button @click="showDialogLoader">show loader</button>-->
-  <!--<button @click="addDialogNotify">add notify</button>-->
-
   <!-- dialog components -->
-    <dialog-input v-ref:dialogInput></dialog-input>
-    <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
-    <dialog-loader v-ref:dialogLoader></dialog-loader>
-    <dialog-notify v-ref:dialogNotify></dialog-notify>
+  <dialog-input v-ref:dialogInput></dialog-input>
+  <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
+  <dialog-loader v-ref:dialogLoader></dialog-loader>
+  <dialog-notify v-ref:dialogNotify></dialog-notify>
   <!-- /dialog components -->
 </main>
 
