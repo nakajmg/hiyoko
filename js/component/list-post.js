@@ -1,43 +1,63 @@
+var _ = require("lodash");
 module.exports = {
-  props: ["posts", "state", "current"],
+  props: ["posts", "state", "current", "currentPost"],
   data() {
     return {
-      search: ''
+      search: "",
+      listedLength: 1
     }
   },
   computed: {
     isPosts() {
       return this.posts.length !== 0;
+    },
+    isList() {
+      return this.listedLength !== 0;
     }
   },
   template: `
     <div class="m-postList" v-show="state" transition="m-postList">
-      <ul>
-        <li class="m-postList__item m-postList__item--current" v-if="!isPosts"><a>(\\( ⁰⊖⁰)/)  NO POST</a></li>
+      <div class="m-postList__empty" v-if="!isPosts || !isList"><a>(\\( ⁰⊖⁰)/)  NO POST</a></div>
+      <ul class="m-postList__list" v-el:list>
         <li class="m-postList__item"
           v-for="post in posts | filterBy search in 'name' 'full_name' 'body_md'"
-          :class="{'m-postList__item--current': $index === current}"
-          @click="select($index)"
-          track-by="_id"
+          :class="{'m-postList__item--current': post._uid === current}"
+          @click="select(post)"
+          track-by="_uid"
+          v-ref:post
         >
           <a>{{post.name}}</a>
-          <span class="m-postList__trash" @click="remove($index)"><i class="fa fa-trash"></i></span>
+          <span class="m-postList__trash" @click="remove(post)"><i class="fa fa-trash"></i></span>
         </li>
       </ul>
       <div class="m-postList__filter">
-        <i class="fa fa-search"></i><input v-model="search"><i class="fa fa-times-circle" @click="resetSearchText"></i>
+        <i class="fa fa-search"></i><input v-model="search" placeholder="search in all fields"><i class="fa fa-times-circle" @click="resetSearchText"></i>
       </div>
     </div>
   `,
+
+  watch: {
+    search() {
+      _.defer(() => {
+        this.listedLength = this._getListedLength();
+      })
+    }
+  },
   methods: {
-    select($index) {
-      this.$dispatch("change:posts:current", $index);
+    select(post) {
+      this.$dispatch("change:posts:current", post);
     },
-    remove($index) {
-      this.$dispatch("remove:posts", $index);
+    remove(post) {
+      this.$dispatch("remove:posts", post);
     },
     resetSearchText() {
       this.search = "";
+    },
+    _getListedLength() {
+      return this.$refs.post.length;
     }
+  },
+  ready() {
+    this.listedLength = this._getListedLength();
   }
 };

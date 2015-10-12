@@ -5,22 +5,28 @@ module.exports = {
   props: ["post", "state"],
   computed: {
     name() {
-      return this.post && this.post.name ? this.post.name : "";
+      if (!this.isPost) return "";
+      return this.post.name ? this.post.name : "";
     },
     body_md() {
+      if (!this.isPost) return "";
       return this.post && this.post.body_md ? this._renderMarkdown(this.post.body_md) : "";
     },
     isEmpty() {
-      return !(this.post && this.post.name) && !(this.post && this.body_md);
+      if (!this.isPost) return;
+      return !this.post.full_name && !this.body_md;
     },
     tags() {
-      return this.post ? this.post.tags : [];
+      return this.isPost ? this.post.tags : [];
     },
     wip() {
-      return this.post ? this.post.wip : true;
+      return this.isPost ? this.post.wip : true;
     },
     category() {
-      return this.post ? this.post.category : "";
+      return this.isPost ? this.post.category : "";
+    },
+    isPost() {
+      return this.post ? true : false;
     }
   },
 

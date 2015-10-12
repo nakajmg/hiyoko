@@ -1,5 +1,5 @@
 module.exports = {
-  _id: "",
+  _uid: "",
   name: "",
   tags: [],
   category: "",

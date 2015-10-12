@@ -1,7 +1,7 @@
 var _ = require("lodash");
 
 module.exports = {
-  props: ["current", "posts", "delay"],
+  props: ["current", "posts", "delay", "post"],
   template: `
     <div class="m-editor">
       <input
@@ -19,17 +19,16 @@ module.exports = {
   `,
   methods: {
     changeBody() {
-      this.posts[this.current].body_md = this.$els.body.value;
+      this.post.body_md = this.$els.body.value;
     },
     changeName() {
       var parsed = this.parseName(this.$els.name.value);
-      var post = this.posts[this.current];
-      post.name = parsed.name;
-      post.category = parsed.category;
-      post.tags = parsed.tags;
-      post.full_name = post.category + post.name;
-      if (post.tags.length !== 0) {
-        post.full_name += " #" + post.tags.join(" #");
+      this.post.name = parsed.name;
+      this.post.category = parsed.category;
+      this.post.tags = parsed.tags;
+      this.post.full_name = this.post.category + this.post.name;
+      if (this.post.tags.length !== 0) {
+        this.post.full_name += " #" + this.post.tags.join(" #");
       }
     },
     parseName(full_name) {
@@ -91,8 +90,8 @@ module.exports = {
         this.$els.body.value = "";
       }
       else {
-        this.$els.name.value = this.posts[this.current].full_name;
-        this.$els.body.value = this.posts[this.current].body_md;
+        this.$els.name.value = this.post.full_name;
+        this.$els.body.value = this.post.body_md;
       }
     }
   }

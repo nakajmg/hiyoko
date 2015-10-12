@@ -27,7 +27,7 @@
       current: null,
       currentPost: null,
       posts: [
-        { name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"}
+        { _uid: 1444669079594, name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"}
       ],
       config: {
         delay: 100,
@@ -43,7 +43,7 @@
 
     watch: {
       current() {
-        this.currentPost = this.posts[this.current];
+        this.currentPost = _.find(this.posts, {_uid: this.current});
       }
     },
 
@@ -73,10 +73,10 @@
 
       "add:newpost"() {
         var post = _.assign({}, require("./js/NEW_POST"));
-        post._id = Date.now();
+        post._uid = Date.now();
         post.created_at = this._getDate();
         this.posts.$set(this.posts.length, post);
-        this.current = this.posts.length - 1;
+        this.current = post._uid;
         this.config.editor = true;
         this.config.preview = true;
       },
@@ -85,22 +85,19 @@
         this.menuState[type] = !this.menuState[type];
       },
 
-      "change:posts:current"($index) {
-        this.current = $index;
+      "change:posts:current"(post) {
+        this.current = post._uid;
       },
-      "remove:posts"($index) {
-        if ($index === this.current) {
+      "remove:posts"(post) {
+        if (post._uid === this.current) {
           this.current = null;
         }
-        else if($index < this.current) {
-          this.current = this.current - 1;
-        }
-        this.posts.splice($index, 1);
+        var index = this._getPostIndex(post);
+        this.posts.splice(index, 1);
         this.addDialogNotify({
           message: "記事を削除しました。"
         });
       }
-
     },
 
     /* methods */
@@ -124,6 +121,9 @@
 
       _getDate() {
         return moment().tz("Asia/Tokyo").format();
+      },
+      _getPostIndex(post) {
+        return _.findIndex(this.posts, {_uid: post._uid});
       }
     }
   });
