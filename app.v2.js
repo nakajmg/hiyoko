@@ -73,6 +73,7 @@
 
       "add:newpost"() {
         var post = _.assign({}, require("./js/NEW_POST"));
+        post._id = Date.now();
         post.created_at = this._getDate();
         this.posts.$set(this.posts.length, post);
         this.current = this.posts.length - 1;

@@ -1,4 +1,40 @@
 $root: ".m-postList";
+.m-postList__filter {
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  background-color: #555555;
+  color: rgba(255, 255, 255, .5);
+  padding: 5px 0 0 7px;
+  box-sizing: border-box;
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  white-space: nowrap;
+  input {
+    color: #000;
+    background-color: #fff;
+    border-radius: 4px;
+    width: 180px;
+    margin-left: 5px;
+    padding: 3px 0;
+  }
+  i {
+    line-height: 20px;
+    vertical-align: middle;
+  }
+  .fa-times-circle {
+    cursor: pointer;
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    z-index: 1;
+    color: rgba(0,0,0, .5);
+  }
+  &:hover .fa-times-circle {
+    display: block;
+  }
+}
 .m-postList {
   list-style: none;
   margin: 0;
@@ -20,7 +56,12 @@ $root: ".m-postList";
   //  top: 122px;
   //  z-index: 1;
   //}
-
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: calc(100% - 40px);
+  }
   &__item {
     box-sizing: border-box;
     cursor: pointer;
@@ -80,9 +121,8 @@ $root: ".m-postList";
     font-size: 16px;
   }
 
-  transition: all 200ms ease;
   &-transition {
-
+    transition: all 200ms ease;
   }
 
   &-enter {

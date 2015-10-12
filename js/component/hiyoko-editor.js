@@ -27,7 +27,10 @@ module.exports = {
       post.name = parsed.name;
       post.category = parsed.category;
       post.tags = parsed.tags;
-      post.full_name = parsed.category + parsed.name + parsed.tags.length !== -1 ? " #" + parsed.tags.join(" #") : "";
+      post.full_name = post.category + post.name;
+      if (post.tags.length !== 0) {
+        post.full_name += " #" + post.tags.join(" #");
+      }
     },
     parseName(full_name) {
       var name, main, tags, category, slash;
