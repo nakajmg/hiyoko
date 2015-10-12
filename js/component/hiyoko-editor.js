@@ -38,11 +38,13 @@ module.exports = {
         tags = full_name.substring(sharp).split(" ");
         tags = _(tags)
           .filter((tag) => {
-            return tag.charAt(0) === "#";
+            return tag.charAt(0) === "#" && tag.length >= 2;
           })
           .map((tag) => {
             return tag.substring(1);
           })
+          .uniq()
+          .compact()
           .value();
       }
       else {
@@ -60,7 +62,7 @@ module.exports = {
         name = main;
         category = "";
       }
-      
+
       return {
         name: name,
         category: category,

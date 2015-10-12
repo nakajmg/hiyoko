@@ -38,8 +38,7 @@ module.exports = {
 
     <div class="m-preview state-empty" v-show="isEmpty">
       <div>
-        <span class="m-preview__category">category1</span>
-        <span class="m-preview__category">category2</span>
+        <span class="m-preview__category">category1/category2</span>
       </div>
       <h2 class="m-preview__title">Preview Title
         <span class="m-preview__tag">#tag1</span>
