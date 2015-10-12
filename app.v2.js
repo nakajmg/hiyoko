@@ -27,7 +27,7 @@
       current: null,
       currentPost: null,
       posts: [
-        { name: "hoge", body_md: "hogehoge", category: "hoge/fuga", tags: ["tag1", "tag2"]}
+        { name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"}
       ],
       config: {
         delay: 100,

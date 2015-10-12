@@ -6,12 +6,12 @@ module.exports = {
     <div class="m-editor">
       <input
         placeholder="category1/category2/Input document title #tag1 #tag2"
-        v-el:input
+        v-el:name
         @keyup="onChangeName"
       >
       <textarea class="m-editor__textarea"
         placeholder="# Input with Markdown"
-        v-el:textarea
+        v-el:body
         @keyup="onChangeBody"
       >
       </textarea>
@@ -19,10 +19,53 @@ module.exports = {
   `,
   methods: {
     changeBody() {
-      this.posts[this.current].body_md = this.$els.textarea.value;
+      this.posts[this.current].body_md = this.$els.body.value;
     },
     changeName() {
-      this.posts[this.current].name = this.$els.input.value;
+      var parsed = this.parseName(this.$els.name.value);
+      var post = this.posts[this.current];
+      post.name = parsed.name;
+      post.category = parsed.category;
+      post.tags = parsed.tags;
+      post.full_name = parsed.category + parsed.name + parsed.tags.length !== -1 ? " #" + parsed.tags.join(" #") : "";
+    },
+    parseName(full_name) {
+      var name, main, tags, category, slash;
+      var sharp = full_name.indexOf("#");
+
+      if (sharp !== -1) {
+        main = full_name.substring(0, sharp);
+        tags = full_name.substring(sharp).split(" ");
+        tags = _(tags)
+          .filter((tag) => {
+            return tag.charAt(0) === "#";
+          })
+          .map((tag) => {
+            return tag.substring(1);
+          })
+          .value();
+      }
+      else {
+        main = full_name;
+        tags = [];
+      }
+
+      slash = main.lastIndexOf("/");
+
+      if (slash !== -1) {
+        name = main.substring(slash + 1).trim();
+        category = main.substring(0, slash).trim();
+      }
+      else {
+        name = main;
+        category = "";
+      }
+      
+      return {
+        name: name,
+        category: category,
+        tags: tags
+      }
     }
   },
 
@@ -39,12 +82,12 @@ module.exports = {
   watch: {
     current() {
       if (this.current === null || this.current === undefined) {
-        this.$els.input.value = "";
-        this.$els.textarea.value = "";
+        this.$els.name.value = "";
+        this.$els.body.value = "";
       }
       else {
-        this.$els.input.value = this.posts[this.current].name;
-        this.$els.textarea.value = this.posts[this.current].body_md;
+        this.$els.name.value = this.posts[this.current].full_name;
+        this.$els.body.value = this.posts[this.current].body_md;
       }
     }
   }

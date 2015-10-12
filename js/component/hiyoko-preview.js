@@ -5,7 +5,7 @@ module.exports = {
   props: ["post", "state"],
   computed: {
     name() {
-      return this.post && this.post.name || "";
+      return this.post && this.post.name ? this.post.name : "";
     },
     body_md() {
       return this.post && this.post.body_md ? this._renderMarkdown(this.post.body_md) : "";
@@ -14,18 +14,23 @@ module.exports = {
       return !(this.post && this.post.name) && !(this.post && this.body_md);
     },
     tags() {
-      return ["#tag1", "#tag2"];
+      return this.post ? this.post.tags : [];
     },
-    categories() {
-      return ["category1", "category2"];
+    wip() {
+      return this.post ? this.post.wip : true;
+    },
+    category() {
+      return this.post ? this.post.category : "";
     }
   },
 
   template: `
     <div class="m-preview" v-show="!isEmpty">
+      <div><span class="m-preview__category">{{category}}</span></div>
       <h2 class="m-preview__title">
         <div>
-          <span>{{name}}</span>
+          <span :class="[wip ? 'm-preview__wip' : 'm-preview__shipped']">{{name}}</span>
+          <span class="m-preview__tag" v-for="tag in tags">#{{tag}}</span>
         </div>
       </h2>
       {{{body_md}}}
