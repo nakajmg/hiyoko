@@ -27,7 +27,7 @@ module.exports = {
           v-ref:post
         >
           <a>{{post.name}}</a>
-          <span class="m-postList__trash" @click="remove(post)"><i class="fa fa-trash"></i></span>
+          <span class="m-postList__trash" @click.stop="remove(post)"><i class="fa fa-trash"></i></span>
         </li>
       </ul>
       <div class="m-postList__filter">

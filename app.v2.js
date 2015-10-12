@@ -58,9 +58,9 @@
       "show:dialog:confirm"(options) {
         this.$refs.dialogconfirm.$emit("show", options);
       },
-      "close:dialog:confirm"(value) {
-        this.confirm = value;
-      },
+//      "close:dialog:confirm"(value) {
+//        this.confirm = value;
+//      },
       "show:dialog:loader"() {
         this.$refs.dialogloader.$emit("show");
       },
@@ -89,14 +89,14 @@
         this.current = post._uid;
       },
       "remove:posts"(post) {
-        if (post._uid === this.current) {
-          this.current = null;
-        }
-        var index = this._getPostIndex(post);
-        this.posts.splice(index, 1);
-        this.addDialogNotify({
-          message: "記事を削除しました。"
+        this.$once("close:dialog:confirm", (confirm) => {
+          if (confirm) {
+            this.current = post._uid === this.current ? null : this.current;
+            this.posts.splice(this._getPostIndex(post), 1);
+            this.addDialogNotify({ message: "記事を削除しました。" });
+          }
         });
+        this.$emit("show:dialog:confirm", { message: "記事を削除しますか？" })
       }
     },
 
