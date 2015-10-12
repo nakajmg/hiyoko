@@ -42,7 +42,7 @@ module.exports = {
           :class="{'m-menu__item--current': state.settings}"
       >
         <a>
-          <i class="fa fa-gear"></i><span>SETTING</span>
+          <i class="fa fa-gear"></i><span>SETTINGS</span>
         </a>
       </li>
     </ul>

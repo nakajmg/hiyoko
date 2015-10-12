@@ -27,7 +27,7 @@
       current: null,
       currentPost: null,
       posts: [
-        { name: "hoge", body_md: "hogehoge"}
+        { name: "hoge", body_md: "hogehoge", category: "hoge/fuga", tags: ["tag1", "tag2"]}
       ],
       config: {
         delay: 100,
@@ -36,7 +36,7 @@
       },
       menuState: {
         newPost: true,
-        posts: false,
+        posts: true,
         settings: false
       }
     },

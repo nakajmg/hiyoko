@@ -1,3 +1,4 @@
+$root: ".m-postList";
 .m-postList {
   list-style: none;
   margin: 0;
@@ -6,45 +7,63 @@
   color: #fff;
   font-size: 14px;
   height: 100%;
-  min-width: 220px;
-  //overflow-y: scroll;
+  width: 220px;
+  overflow-y: scroll;
   position: relative;
-  &:after {
-    right: 100%;
-    position: absolute;
-    content: "";
-    display: block;
-    border: 10px solid transparent;
-    border-right: 10px solid #555;
-    top: 122px;
-    z-index: 1;
-  }
+  //&:after {
+  //  right: 100%;
+  //  position: absolute;
+  //  content: "";
+  //  display: block;
+  //  border: 10px solid transparent;
+  //  border-right: 10px solid #555;
+  //  top: 122px;
+  //  z-index: 1;
+  //}
+
   &__item {
+    box-sizing: border-box;
     cursor: pointer;
     position: relative;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    min-height: 38px;
+    min-height: 54px;
     a {
-      padding: 10px;
-      display: block;
       height: 100%;
-      border-bottom: 1px solid rgba(0,0,0,0.2);
       transition-duration: .3s;
-      min-height: 25px;
+      //white-space: nowrap;
+      //overflow: hidden;
+      //text-overflow: ellipsis;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
     }
-    a:hover {
+    &:hover {
       background: rgba(0,0,0,0.2);
       color: white;
-      text-decoration: none;
+      a {
+        text-decoration: none;
+      }
+      #{$root}__trash {
+        display: block;
+        &:hover {
+          color: tomato;
+          opacity: 1;
+        }
+      }
     }
   }
   &__item--current {
-    a {
-      background-color: #333 !important;
-      color: #fff !important;
-    }
+    background-color: #333 !important;
+    color: #fff !important;
   }
 
   &__trash {
-    display: block;
+    display: none;
     opacity: 0.5;
     width: 20px;
     position: absolute;
@@ -59,9 +78,18 @@
     cursor: pointer;
     transition: 300ms ease;
     font-size: 16px;
-    &:hover {
-      color: tomato;
-      opacity: 1;
-    }
+  }
+
+  transition: all 200ms ease;
+  &-transition {
+
+  }
+
+  &-enter {
+    width: 0;
+  }
+
+  &-leave {
+    width: 0;
   }
 }

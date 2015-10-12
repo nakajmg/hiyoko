@@ -6,7 +6,7 @@ module.exports = {
     }
   },
   template: `
-    <ul class="m-postList" v-show="state">
+    <ul class="m-postList" v-show="state" transition="m-postList">
       <li class="m-postList__item m-postList__item--current" v-if="!isPosts"><a>(\\( ⁰⊖⁰)/)  NO POST</a></li>
       <li class="m-postList__item"
         v-for="post in posts"

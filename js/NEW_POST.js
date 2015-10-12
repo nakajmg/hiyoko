@@ -1,8 +1,9 @@
 module.exports = {
   name: "",
-  body_md: "",
   tags: [],
   category: "",
+  full_name: "",
+  body_md: "",
   wip: true,
   message: "",
   user: "",

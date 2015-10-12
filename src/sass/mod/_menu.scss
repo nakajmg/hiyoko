@@ -11,6 +11,7 @@
   position: relative;
   &__item {
     cursor: pointer;
+    position: relative;
     a {
       position: relative;
       display: flex;
@@ -61,12 +62,24 @@
     i {
       color: rgba(255,255,255,0.5);
     }
+    &:after {
+      right: 0;
+      position: absolute;
+      content: "";
+      display: block;
+      border: 10px solid transparent;
+      border-right: 10px solid #555;
+      top: 50%;
+      margin-top: -10px;
+      z-index: 10;
+    }
   }
   &__item:first-of-type {
     a {
       color: #fff;
       padding-top: 0;
       height: 100%;
+      background-color: transparent !important;
     }
     &[disabled] {
       a {
@@ -74,12 +87,14 @@
         color: rgba(0,0,0,0.5);
       }
     }
+    &:after {
+      display: none !important;
+    }
   }
-
   &__item:last-of-type {
-    align-self: flex-end;
-    position: relative;
-    bottom: 0;
+    &:after {
+      border-right-color: #fff;
+    }
   }
 
   &__newPost {
