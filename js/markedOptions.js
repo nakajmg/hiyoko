@@ -1,3 +1,4 @@
+var hljs = require("highlight.js");
 module.exports = {
   highlight: function(code, lang, callback) {
     if (lang && hljs.getLanguage(lang)) {
