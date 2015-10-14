@@ -62,6 +62,11 @@
     }
   }
 
+  .l-listHeading {
+    height: 100%;
+    flex-grow: 1;
+  }
+
   .state-bottom {
     padding-top: 0;
     padding-bottom: 50px;

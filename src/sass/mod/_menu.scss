@@ -97,6 +97,12 @@
     }
   }
 
+  &__item:nth-of-type(3) {
+    &:after {
+      border-right-color: #fff;
+    }
+  }
+
   &__newPost {
     transition-duration: 0.3s;
     transition-timing-function: ease-in-out;
