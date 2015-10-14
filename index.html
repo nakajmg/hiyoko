@@ -28,6 +28,11 @@
     </div>
     <div class="l-md state-bottom" >
       <div class="l-md__toolbar">
+        <hiyoko-toolbar
+          v-ref:toolbar
+          :post.sync="currentPost"
+          :state.sync="config"
+        ></hiyoko-toolbar>
       </div>
       <div class="l-input" v-show="config.editor && currentPost">
         <hiyoko-editor
@@ -60,6 +65,15 @@
 <script src="./lib/pouchdb.min.js"></script>
 <script src="./lib/pouchdb.find.min.js"></script>
 <script src="./app.v2.js"></script>
+<script>
+$(function() {
+  $(document).on("click", ".l-main a[href]", function(e) {
+    e.originalEvent.preventDefault();
+    var href = $(this).attr("href");
+    require("shell").openExternal(href);
+  });
+});
+</script>
 <script>require('electron-connect').client.create()</script>
 </body>
 </html>

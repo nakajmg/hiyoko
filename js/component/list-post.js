@@ -12,12 +12,15 @@ module.exports = {
       return this.posts.length !== 0;
     },
     isList() {
+      if (this.isPosts) {
+        return false
+      }
       return this.listedLength !== 0;
     }
   },
   template: `
     <div class="m-postList" v-show="state" transition="m-postList">
-      <div class="m-postList__empty" v-if="!isPosts || !isList"><a>(\\( ⁰⊖⁰)/)  NO POST</a></div>
+      <div class="m-postList__empty" v-if="!isPosts"><a>(\\( ⁰⊖⁰)/)  NO POST</a></div>
       <ul class="m-postList__list" v-el:list>
         <li class="m-postList__item"
           v-for="post in posts | filterBy search in 'name' 'full_name' 'body_md'"
@@ -41,6 +44,9 @@ module.exports = {
       _.defer(() => {
         this.listedLength = this._getListedLength();
       })
+    },
+    posts() {
+      this.listedLength = this._getListedLength();
     }
   },
   methods: {
@@ -58,6 +64,6 @@ module.exports = {
     }
   },
   ready() {
-    this.listedLength = this._getListedLength();
+//    this.listedLength = this._getListedLength();
   }
 };
