@@ -23,6 +23,7 @@
   Vue.component("hiyoko-preview", require("./js/component/hiyoko-preview"));
   Vue.component("hiyoko-toolbar", require("./js/component/hiyoko-toolbar"));
   Vue.component("list-heading", require("./js/component/list-heading"));
+  Vue.component("hiyoko-settings", require("./js/component/hiyoko-settings"));
   Vue.config.debug = true;
 
   /* create vm */

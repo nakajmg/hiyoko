@@ -24,6 +24,8 @@ $root: ".m-list-heading";
 
   &__left {
     margin-right: 15px;
+    align-self: baseline;
+    margin-top: 3px;
   }
   &__right {
     flex-grow: 1;
@@ -63,8 +65,10 @@ $root: ".m-list-heading";
   &__edit {
     cursor: pointer;
     color: rgba(60,74,96,0.5);
+    vertical-align: middle;
     i {
-      font-size: 14px;
+      font-size: 16px;
+      margin-left: 5px;
     }
     &:hover {
       color: $color-main;
@@ -152,9 +156,9 @@ $root: ".m-list-heading";
     }
 
     #{$root}__edit {
-      position: absolute;
-      top: 0;
-      right: 0;
+      //position: absolute;
+      //top: 0;
+      //right: 0;
       display: inline-block;
       margin-bottom: 0;
       font-weight: normal;
@@ -162,8 +166,8 @@ $root: ".m-list-heading";
       vertical-align: middle;
       cursor: pointer;
       white-space: nowrap;
-      padding: 6px 12px;
-      padding-left: 8px;
+      padding: 5px 12px;
+      padding-left: 7px;
       -webkit-user-select: none;
       user-select: none;
       background-color: #0a9b94;
@@ -173,6 +177,7 @@ $root: ".m-list-heading";
       font-size: 12px;
       border-radius: 3px;
       transition: 200ms ease;
+      margin-left: 3px;
       i {
 
         color: rgba(255,255,255,0.7);

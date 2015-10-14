@@ -1,27 +1,38 @@
 module.exports = {
   props: ["state"],
-  event: {
+  watch: {
+    "state.settings"() {
+      if(this.state.settings) {
+        this.$emit("disable");
+      }
+      else {
+        this.$emit("enable");
+      }
+    }
+  },
+  events: {
     disable() {
       this.beforeState = {
         newPost: this.state.newPosts,
         posts: this.state.posts,
-        settings: this.state.settings
+        heading: this.state.heading
       };
       this.state.newPost = false;
       this.state.posts = false;
-      this.state.settings = false;
+      this.state.heading = false;
     },
     enable() {
-      this.state.newPosts = this.beforeState.newPost || true;
-      this.state.posts = this.beforeState.posts || true;
-      this.state.settings = this.beforeState.settings || true;
+      this.state.newPosts = this.beforeState.newPost;
+      this.state.posts = this.beforeState.posts;
+      this.state.heading = this.beforeState.heading;
     }
   },
   template: `
-    <ul class="m-menu">
+    <ul class="m-menu" :class="{'state-settings': state.settings}">
       <li class="m-menu__item"
           @click="addNewPost"
           :class="{'m-menu__item--current': state.newPost}"
+          :disabled="state.settings"
       >
         <a>
           <span class="m-menu__newPost"></span>
