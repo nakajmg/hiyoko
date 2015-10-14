@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var moment = require("moment-timezone");
 
 module.exports = {
   props: ["current", "posts", "delay", "post"],
@@ -19,20 +20,30 @@ module.exports = {
   `,
   methods: {
     changeBody() {
-      this.post.body_md = this.$els.body.value;
+      this.update({body_md: this.$els.body.value})
     },
     changeName() {
-      var parsed = this.parseName(this.$els.name.value);
-      this.post.name = parsed.name;
-      this.post.category = parsed.category;
-      this.post.tags = parsed.tags;
-      this.post.full_name = this.post.category + this.post.name;
-      if (this.post.tags.length !== 0) {
-        this.post.full_name += " #" + this.post.tags.join(" #");
-      }
+      this.update(this.parseName(this.$els.name.value));
+    },
+    update(params) {
+      _.each(params, (value, key) => {
+        if (_.isString(value)) {
+          this.post[key] = value;
+        }
+        else if(_.isArray(value)) {
+          this.post[key] = value.concat();
+        }
+        else if(_.isObject(value)) {
+          this.post[key] = _.assign({}, value);
+        }
+        else {
+          this.post[key] = value;
+        }
+      });
+      this.post._modified_at = moment().tz("Asia/Tokyo").format();
     },
     parseName(full_name) {
-      var name, main, tags, category, slash;
+      var name, main, tags, category, full_name, slash;
       var sharp = full_name.indexOf("#");
 
       if (sharp !== -1) {
@@ -58,17 +69,23 @@ module.exports = {
 
       if (slash !== -1) {
         name = main.substring(slash + 1).trim();
-        category = main.substring(0, slash).trim();
+        category = main.substring(0, slash + 1);
       }
       else {
         name = main;
         category = "";
       }
 
+      full_name = `${category}${name}`;
+      if (tags.length !== 0) {
+        full_name = `${full_name} #${tags.join(" #")}`;
+      }
+
       return {
         name: name,
         category: category,
-        tags: tags
+        tags: tags,
+        full_name: full_name
       }
     }
   },

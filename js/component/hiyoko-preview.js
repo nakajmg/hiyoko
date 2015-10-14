@@ -1,12 +1,13 @@
 var emosa = require("emosa");
 var marked = require("marked");
+var _ = require("lodash");
 marked.setOptions(require("../markedOptions"));
 module.exports = {
   props: ["post", "state"],
   computed: {
     name() {
       if (!this.isPost) return "";
-      return this.post.name ? this.post.name : "";
+      return this.post.name ? emosa.replaceToUnicode(this.post.name) : "";
     },
     body_md() {
       if (!this.isPost) return "";
