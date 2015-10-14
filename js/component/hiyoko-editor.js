@@ -41,6 +41,7 @@ module.exports = {
         }
       });
       this.post._modified_at = moment().tz("Asia/Tokyo").format();
+      console.log(this.post._modified_at)
     },
     parseName(full_name) {
       var name, main, tags, category, full_name, slash;
@@ -69,14 +70,14 @@ module.exports = {
 
       if (slash !== -1) {
         name = main.substring(slash + 1).trim();
-        category = main.substring(0, slash + 1);
+        category = main.substring(0, slash);
       }
       else {
         name = main;
         category = "";
       }
 
-      full_name = `${category}${name}`;
+      full_name = `${category}/${name}`;
       if (tags.length !== 0) {
         full_name = `${full_name} #${tags.join(" #")}`;
       }

@@ -26,8 +26,8 @@
         :current="current">
       </list-post>
     </div>
-    <div class="l-md state-bottom" >
-      <div class="l-md__toolbar">
+    <div class="l-md state-bottom" v-show="!menuState.heading">
+      <div class="l-md__toolbar" v-if="currentPost">
         <hiyoko-toolbar
           v-ref:toolbar
           :post.sync="currentPost"
@@ -49,6 +49,14 @@
           :post.sync="currentPost"
         ></hiyoko-preview>
       </div>
+    </div>
+    <div class="l-listHeading" v-show="menuState.heading">
+      <list-heading
+        :posts.sync="posts"
+        :state="menuState"
+        :current="current"
+      >
+      </list-heading>
     </div>
   </div>
   <!-- dialog components -->

@@ -1,10 +1,12 @@
 (function() {
+  "use strict";
   var emosa = require("emosa");
   var Vue = require("vue");
   var hljs = require("highlight.js");
   var marked = require("marked");
-  db = new PouchDB("hiyoko");
+  var db = new PouchDB("hiyoko");
   var fetch = require("isomorphic-fetch");
+  var Qs = require("qs");
   var Promise = require("bluebird");
   var moment = require("moment-timezone");
   var _ = require("lodash");
@@ -19,15 +21,19 @@
   Vue.component("list-post", require("./js/component/list-post"));
   Vue.component("hiyoko-editor", require("./js/component/hiyoko-editor"));
   Vue.component("hiyoko-preview", require("./js/component/hiyoko-preview"));
+  Vue.component("hiyoko-toolbar", require("./js/component/hiyoko-toolbar"));
+  Vue.component("list-heading", require("./js/component/list-heading"));
+  Vue.config.debug = true;
 
   /* create vm */
-  vm = new Vue({
+  window.vm = new Vue({
     el: "#app",
     data: {
       current: null,
       currentPost: null,
       posts: [
-        { _uid: 1444669079594, name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"}
+//        { _uid: 1444669079594, name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"},
+//        { _uid: 1444669079595, name: "おんぎゃー", category: "定例/10/31/", tags: ["定例", "tag2"], full_name: "定例/10/31/おんぎゃー #定例 #tag2", wip: false, body_md: "おぎゃあおぎゃあ"},
       ],
       config: {
         delay: 100,
@@ -37,6 +43,7 @@
       menuState: {
         newPost: true,
         posts: true,
+        heading: false,
         settings: false
       }
     },
@@ -75,10 +82,12 @@
         var post = _.assign({}, require("./js/NEW_POST"));
         post._uid = Date.now();
         post.created_at = this._getDate();
-        this.posts.$set(this.posts.length, post);
+        post._modified_at = this._getDate();
+        this.posts.splice(0,0, post);
         this.current = post._uid;
         this.config.editor = true;
         this.config.preview = true;
+        this.menuState.heading = false;
       },
 
       "change:menu:toggle"(type) {
@@ -122,9 +131,58 @@
       _getDate() {
         return moment().tz("Asia/Tokyo").format();
       },
+      _getUnixTime(JST) {
+        return moment(JST).tz("Asia/Tokyo").unix()
+      },
       _getPostIndex(post) {
         return _.findIndex(this.posts, {_uid: post._uid});
+      },
+      test() {
+        let posts = require("./nakajmg.json");
+        _.each(posts, (post, index) => {
+          post._uid = Date.now() + index;
+          this.posts.$set(this.posts.length, post);
+        });
+//        _.each(require("./nakajmg.json"), (post) => {
+//          console.log(post);
+//          post._uid = this._getDate();
+//          this.posts.push(this.posts.length, post);
+//        });
+//        this.$set("posts", require("./nakajmg.json"));
+//        let token = require("./token");
+//        let api = "https://api.esa.io/v1/teams/pxgrid/posts";
+//        let param = {
+//          q: "user:nakajmg",
+//          per_page: 100
+//        };
+//        let query = Qs.stringify(param);
+//        let url = `${api}?${query}`;
+//        console.log(url);
+//        fetch(url, {
+//          method: "get",
+//          headers: {
+//            "Authorization": `Bearer ${token}`,
+//            "Content-Type": "application/json"
+//          }
+//        })
+//        .then((res) => {
+//          return res.json();
+//        })
+//        .then((json) => {
+//          console.log(json);
+//          debugger
+//        });
+
       }
+    },
+
+    ready() {
+      let posts = require("./dummy_posts.json");
+      _.each(posts, (post, index) => {
+        post._uid = Date.now() + index;
+        post._modified_at = "";
+        this.posts.$set(this.posts.length, post);
+      });
     }
   });
 

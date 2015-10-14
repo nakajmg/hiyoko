@@ -33,6 +33,14 @@ module.exports = {
           :class="{'m-menu__item--current': state.posts}"
       >
         <a>
+          <i class="fa fa-home"></i><span>HOME</span>
+        </a>
+      </li>
+      <li class="m-menu__item"
+          @click="toggleMenu('heading')"
+          :class="{'m-menu__item--current': state.heading}"
+      >
+        <a>
           <i class="fa fa-file-text-o"></i><span>POSTS</span>
         </a>
       </li>
