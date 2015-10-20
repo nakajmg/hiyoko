@@ -28,5 +28,5 @@ gulp.task("serve", () => {
   econ.start();
   gulp.watch(["main.js"], econ.restart);
   gulp.watch([src.sass], ["sass", econ.reload]);
-  gulp.watch(["index.html", src.js], econ.reload);
+  gulp.watch(["*.html", src.js], econ.reload);
 });
