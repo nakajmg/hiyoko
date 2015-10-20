@@ -2,7 +2,7 @@ var _ = require("lodash");
 var moment = require("moment-timezone");
 
 module.exports = {
-  props: ["current", "posts", "delay", "post"],
+  props: ["delay", "post"],
   template: `
     <div class="m-editor">
       <input
@@ -41,7 +41,7 @@ module.exports = {
         }
       });
       this.post._modified_at = moment().tz("Asia/Tokyo").format();
-      console.log(this.post._modified_at)
+      this.$dispatch("update:editor");
     },
     parseName(full_name) {
       var name, main, tags, category, full_name, slash;
@@ -77,7 +77,8 @@ module.exports = {
         category = "";
       }
 
-      full_name = `${category}/${name}`;
+      full_name = category ? `${category}/${name}` : name;
+
       if (tags.length !== 0) {
         full_name = `${full_name} #${tags.join(" #")}`;
       }
@@ -101,16 +102,8 @@ module.exports = {
     }, this.delay);
   },
 
-  watch: {
-    current() {
-      if (this.current === null || this.current === undefined) {
-        this.$els.name.value = "";
-        this.$els.body.value = "";
-      }
-      else {
-        this.$els.name.value = this.post.full_name;
-        this.$els.body.value = this.post.body_md;
-      }
-    }
+  ready() {
+    this.$els.name.value = this.post.full_name;
+    this.$els.body.value = this.post.body_md;
   }
 };

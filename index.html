@@ -34,15 +34,6 @@
           :state.sync="config"
         ></hiyoko-toolbar>
       </div>
-      <div class="l-input" v-show="config.editor && currentPost">
-        <hiyoko-editor
-          v-ref:editor
-          :delay="config.delay"
-          :current.sync="current"
-          :post.sync="currentPost"
-          :posts.sync="posts">
-        </hiyoko-editor>
-      </div>
       <div class="l-preview" v-show="config.preview && currentPost">
         <hiyoko-preview
           v-ref:preview

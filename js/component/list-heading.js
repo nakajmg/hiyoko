@@ -19,7 +19,7 @@ module.exports = {
       <div v-for="post in posts" class="m-list-heading__item" :class="{'state-wip': post.wip, 'state-current': current == post._uid}">
         <div class="m-list-heading__left">
           <div class="m-list-heading__icon">
-            <img :src="post.created_by.icon">
+            <img :src="post.created_by ? post.created_by.icon : null">
           </div>
         </div>
         <div class="m-list-heading__right">
@@ -44,7 +44,6 @@ module.exports = {
             </span>
             <span class="m-list-heading__date">
               <div>
-
                 <span class="m-list-heading__date-label">Updated </span><i class="fa fa-clock-o"></i>{{date(post.updated_at)}}
               </div>
               <div>
@@ -59,8 +58,7 @@ module.exports = {
 
   methods: {
     edit(post) {
-      this.$dispatch("change:posts:current", post);
-      this.state.heading = false;
+      this.$dispatch("open:editor", post);
     },
     date(time) {
       if (time) {

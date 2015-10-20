@@ -26,6 +26,7 @@ module.exports = {
           v-for="post in posts | filterBy search in 'name' 'full_name' 'body_md'"
           :class="{'m-postList__item--current': post._uid === current}"
           @click="select(post)"
+          @dblclick="openEditor(post)"
           track-by="_uid"
           v-ref:post
         >
@@ -61,6 +62,9 @@ module.exports = {
     },
     _getListedLength() {
       return this.$refs.post.length;
+    },
+    openEditor(post) {
+      this.$dispatch("open:editor", post);
     }
   },
   ready() {

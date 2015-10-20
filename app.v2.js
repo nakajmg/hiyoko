@@ -2,15 +2,14 @@
   "use strict";
   var emosa = require("emosa");
   var Vue = require("vue");
-  var hljs = require("highlight.js");
   var marked = require("marked");
   var db = new PouchDB("hiyoko");
   var fetch = require("isomorphic-fetch");
-  var Qs = require("qs");
   var Promise = require("bluebird");
   var moment = require("moment-timezone");
   var _ = require("lodash");
   marked.setOptions(require("./js/markedOptions"));
+  var ipc = require("ipc");
 
   /* registration component */
   Vue.component("dialog-input", require("./js/component/dialog-input"));
@@ -66,9 +65,6 @@
       "show:dialog:confirm"(options) {
         this.$refs.dialogconfirm.$emit("show", options);
       },
-//      "close:dialog:confirm"(value) {
-//        this.confirm = value;
-//      },
       "show:dialog:loader"() {
         this.$refs.dialogloader.$emit("show");
       },
@@ -107,6 +103,10 @@
           }
         });
         this.$emit("show:dialog:confirm", { message: "記事を削除しますか？" })
+      },
+
+      "open:editor"(post) {
+        ipc.send("open:editor", JSON.parse(JSON.stringify(post)));
       }
     },
 
@@ -137,53 +137,24 @@
       },
       _getPostIndex(post) {
         return _.findIndex(this.posts, {_uid: post._uid});
-      },
-      test() {
-        let posts = require("./nakajmg.json");
-        _.each(posts, (post, index) => {
-          post._uid = Date.now() + index;
-          this.posts.$set(this.posts.length, post);
-        });
-//        _.each(require("./nakajmg.json"), (post) => {
-//          console.log(post);
-//          post._uid = this._getDate();
-//          this.posts.push(this.posts.length, post);
-//        });
-//        this.$set("posts", require("./nakajmg.json"));
-//        let token = require("./token");
-//        let api = "https://api.esa.io/v1/teams/pxgrid/posts";
-//        let param = {
-//          q: "user:nakajmg",
-//          per_page: 100
-//        };
-//        let query = Qs.stringify(param);
-//        let url = `${api}?${query}`;
-//        console.log(url);
-//        fetch(url, {
-//          method: "get",
-//          headers: {
-//            "Authorization": `Bearer ${token}`,
-//            "Content-Type": "application/json"
-//          }
-//        })
-//        .then((res) => {
-//          return res.json();
-//        })
-//        .then((json) => {
-//          console.log(json);
-//          debugger
-//        });
-
       }
     },
 
-    ready() {
+    created() {
       let posts = require("./dummy_posts.json");
       _.each(posts, (post, index) => {
         post._uid = Date.now() + index;
         post._modified_at = "";
         this.posts.$set(this.posts.length, post);
       });
+      ipc.on("post-update", (post) => {
+        var index = this._getPostIndex(post);
+        _.assign(this.posts[index], post);
+      });
+    },
+
+    ready() {
+
     }
   });
 

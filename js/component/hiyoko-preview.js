@@ -28,6 +28,9 @@ module.exports = {
     },
     isPost() {
       return this.post ? true : false;
+    },
+    isPreview() {
+      return this.post && !this.post.full_name && !this.body_md;
     }
   },
 
@@ -43,7 +46,7 @@ module.exports = {
       {{{body_md}}}
     </div>
 
-    <div class="m-preview state-empty" v-show="isEmpty">
+    <div class="m-preview state-empty" v-show="isPreview">
       <div>
         <span class="m-preview__category">category1/category2</span>
       </div>
