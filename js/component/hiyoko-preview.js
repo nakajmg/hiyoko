@@ -3,7 +3,7 @@ var marked = require("marked");
 var _ = require("lodash");
 marked.setOptions(require("../markedOptions"));
 module.exports = {
-  props: ["post", "state"],
+  props: ["post", "state", "readonly"],
   computed: {
     name() {
       if (!this.isPost) return "";
@@ -36,6 +36,7 @@ module.exports = {
 
   template: `
     <div class="m-preview" v-show="!isEmpty">
+      <button class="m-preview__close" @click="close" v-if="readonly"><i class="fa fa-times-circle"></i></button>
       <div><span class="m-preview__category">{{category}}</span></div>
       <h2 class="m-preview__title">
         <div>
@@ -78,6 +79,9 @@ module.exports = {
     },
     _emosa(html) {
       return emosa.replaceToUnicode(html);
+    },
+    close() {
+      this.state.preview = false;
     }
   }
 };

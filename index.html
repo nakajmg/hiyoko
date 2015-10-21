@@ -15,40 +15,55 @@
 <body>
 <main id="app" v-cloak>
   <div class="l-main">
-    <div class="l-menu">
+    <section class="l-menu">
       <list-menu :state.sync="menuState"></list-menu>
-    </div>
-    <div class="l-posts">
-      <list-post
-        v-ref:listPosts
-        :posts.sync="posts"
-        :state="menuState.posts"
-        :current="current">
-      </list-post>
-    </div>
-    <div class="l-md state-bottom" v-show="!menuState.heading">
-      <div class="l-md__toolbar" v-if="currentPost">
-        <hiyoko-toolbar
-          v-ref:toolbar
-          :post.sync="currentPost"
-          :state.sync="config"
-        ></hiyoko-toolbar>
-      </div>
-      <div class="l-preview" v-show="config.preview && currentPost">
-        <hiyoko-preview
-          v-ref:preview
-          :post.sync="currentPost"
-        ></hiyoko-preview>
-      </div>
-    </div>
-    <div class="l-listHeading" v-show="menuState.heading">
-      <list-heading
-        :posts.sync="posts"
-        :state="menuState"
-        :current="current"
-      >
-      </list-heading>
-    </div>
+    </section>
+
+    <section class="l-main__right">
+      <section class="l-header">
+        <hiyoko-header
+
+          ></hiyoko-header>
+      </section>
+
+      <section class="l-main__contents">
+        <div class="l-posts">
+          <list-post
+            v-ref:listPosts
+            :posts.sync="posts"
+            :state="menuState.posts"
+            :current="current">
+          </list-post>
+        </div>
+
+        <div class="l-listHeading" v-show="menuState.heading">
+          <list-heading
+            :posts.sync="posts"
+            :state="menuState"
+            :current="current"
+            >
+          </list-heading>
+        </div>
+        <div class="l-md state-bottom" v-if="currentPost" v-show="config.preview">
+          <div class="l-md__toolbar" v-if="currentPost">
+            <hiyoko-toolbar
+              v-ref:toolbar
+              :post.sync="currentPost"
+              :state.sync="config"
+              ></hiyoko-toolbar>
+          </div>
+          <div class="l-preview" v-show="config.preview && currentPost">
+            <hiyoko-preview
+              v-ref:preview
+              :post.sync="currentPost"
+              :state.sync="config"
+              :readonly="true"
+              ></hiyoko-preview>
+          </div>
+        </div>
+      </section>
+    </section>
+
   </div>
   <hiyoko-settings v-show="menuState.settings">
 

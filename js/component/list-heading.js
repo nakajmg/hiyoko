@@ -1,6 +1,5 @@
 var moment = require("moment-timezone");
 module.exports = {
-
   watch: {
     "state.heading"() {
       if (this.state.heading) {
@@ -13,10 +12,16 @@ module.exports = {
       }
     }
   },
-  props: ["posts", "state", "current"],
+  props: ["posts", "state", "current", "search"],
   template: `
     <div class="m-list-heading">
-      <div v-for="post in posts" class="m-list-heading__item" :class="{'state-wip': post.wip, 'state-current': current == post._uid}">
+      <a href="#"
+        v-for="post in posts | filterBy search in 'name' 'full_name' 'body_md'"
+        class="m-list-heading__item" :class="{'state-wip': post.wip, 'state-current': current == post._uid}"
+        @dblclick="edit(post)"
+        @click="select(post)"
+        @keydown.enter="select(post)"
+        >
         <div class="m-list-heading__left">
           <div class="m-list-heading__icon">
             <img :src="post.created_by ? post.created_by.icon : null">
@@ -27,7 +32,7 @@ module.exports = {
             {{post.category}}
           </div>
           <div class="m-list-heading__mid">
-            <span class="m-list-heading__name">{{post.name}}</span>
+            <span class="m-list-heading__name" @click="select(post)">{{post.name}}</span>
             <span class="m-list-heading__tag" v-for="tag in post.tags">#{{tag}}</span>
             <span class="m-list-heading__edit" @click="edit(post)"><i class="fa fa-pencil"></i></span>
           </div>
@@ -45,14 +50,14 @@ module.exports = {
             <span class="m-list-heading__date">
               <div>
                 <span class="m-list-heading__date-label">Updated </span><i class="fa fa-clock-o"></i>{{date(post.updated_at)}}
-              </div>
+              </div><br>
               <div>
                 <span class="m-list-heading__date-label">Modified </span><i class="fa fa-clock-o"></i>{{date(post._modified_at)}}
               </div>
             </span>
           </div>
         </div>
-      </div>
+      </a>
     </div>
   `,
 
@@ -67,6 +72,9 @@ module.exports = {
       else {
         return "none";
       }
+    },
+    select(post) {
+      this.$dispatch("change:posts:current", post);
     }
   }
 };

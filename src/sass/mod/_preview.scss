@@ -1,5 +1,7 @@
 .m-preview{
   font-size: 14px;
+  position: relative;
+  padding-bottom: 30px;
   code, kbd, pre, samp {
     font-size: 13px;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -199,6 +201,21 @@
     color: rgba(60,74,96,0.5);
     .m-preview__title {
       border-bottom: 3px solid rgba(0,0,0, .3);
+    }
+  }
+  &__close {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    background-color: transparent;
+    color: rgba(#0a9b94, .1);
+    padding: 0;
+    border: none;
+    .fa {
+      font-size: 40px;
+    }
+    &:hover {
+      color: rgba(#0a9b94,.8);
     }
   }
 }

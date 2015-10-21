@@ -23,6 +23,7 @@
   Vue.component("hiyoko-toolbar", require("./js/component/hiyoko-toolbar"));
   Vue.component("list-heading", require("./js/component/list-heading"));
   Vue.component("hiyoko-settings", require("./js/component/hiyoko-settings"));
+  Vue.component("hiyoko-header", require("./js/component/hiyoko-header"));
   Vue.config.debug = true;
 
   /* create vm */
@@ -42,8 +43,8 @@
       },
       menuState: {
         newPost: true,
-        posts: true,
-        heading: false,
+        posts: false,
+        heading: true,
         settings: false
       }
     },
@@ -82,9 +83,12 @@
         post._modified_at = this._getDate();
         this.posts.splice(0,0, post);
         this.current = post._uid;
-        this.config.editor = true;
-        this.config.preview = true;
-        this.menuState.heading = false;
+        _.defer(() => {
+          this.$emit("open:editor", this.currentPost);
+        });
+//        this.config.editor = true;
+//        this.config.preview = true;
+//        this.menuState.heading = false;
       },
 
       "change:menu:toggle"(type) {
@@ -93,6 +97,7 @@
 
       "change:posts:current"(post) {
         this.current = post._uid;
+        this.config.preview = true;
       },
       "remove:posts"(post) {
         this.$once("close:dialog:confirm", (confirm) => {
