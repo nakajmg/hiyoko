@@ -30,11 +30,11 @@ module.exports = {
         </div>
         <div class="m-list-heading__right">
           <div class="m-list-heading__category">
-            {{post.category}}
+            <span @click="searchByCategory(post.category)">{{post.category}}</span>
           </div>
           <div class="m-list-heading__mid">
             <span class="m-list-heading__name" @click="select(post)">{{post.name}}</span>
-            <span class="m-list-heading__tag" v-for="tag in post.tags">#{{tag}}</span>
+            <span class="m-list-heading__tag" v-for="tag in post.tags" @click="searchByTag(tag)">#{{tag}}</span>
             <span class="m-list-heading__edit" @click="edit(post)"><i class="fa fa-pencil"></i></span>
           </div>
           <div class="m-list-heading__feedback">
@@ -76,6 +76,14 @@ module.exports = {
     },
     select(post) {
       this.$dispatch("change:posts:current", post);
+    },
+    searchByTag(tag) {
+      event.stopPropagation();
+      this.$dispatch("set:keyword", "tag:" + tag);
+    },
+    searchByCategory(category) {
+      event.stopPropagation();
+      this.$dispatch("set:keyword", "category:" + category);
     }
   }
 };

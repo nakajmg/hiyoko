@@ -23,8 +23,12 @@ module.exports = function esa(posts, input) {
 
 var searcher = {
   all(posts, keyword) {
+    var negative = isNegative(keyword);
+    if (negative) {
+      keyword = keyword.substr(1);
+    }
     return _.filter(posts, (post) => {
-      return all(post, keyword);
+      return all(post, keyword, negative);
     });
   },
 
@@ -38,15 +42,26 @@ var searcher = {
     return _.filter(posts, (post) => {
       var type = keyword.split(":")[0];
       var value = keyword.split(":")[1];
-      return keyValue(post, type, value);
+      var negative = isNegative(type);
+      if (negative) {
+        type = type.substr(1);
+      }
+
+      return keyValue(post, type, value, negative);
     });
   }
 };
 
-function all(post, keyword, flip) {
-  return _.some([body, name, tags, category], (fn) => {
-    return fn(post, keyword, flip);
+function all(post, keyword, negative) {
+  var ret, search;
+
+  search = negative ? _.every : _.some;
+
+  ret = search([body, name, tags, category], (fn) => {
+    return fn(post, keyword, negative);
   });
+
+  return ret;
 }
 
 function specialChar(post, keyword) {
@@ -55,22 +70,11 @@ function specialChar(post, keyword) {
   switch(initial) {
     case "#":
       return tags(post, keyword);
-    case "-":
-      return all(post, keyword, true);
-    case "@":
-      return true
   }
   return false;
 }
 
-function keyValue(post, type, keyword) {
-  var flip = false;
-  if (isSpecial(keyword)) {
-    if (keyword.charAt(0) === "-") {
-      flip = true;
-    }
-    keyword = keyword.substr(1);
-  }
+function keyValue(post, type, keyword, negative) {
 
   switch(type) {
 
@@ -78,32 +82,32 @@ function keyValue(post, type, keyword) {
     //    記事名にkeywordを含むものを絞り込み
     case "name":
     case "title":
-      return name(post, keyword, flip);
+      return name(post, keyword, negative);
 
     //  wip:true or wip:false
     //    記事のwip状態で絞り込み
     case "wip":
-      return wip(post, keyword, flip);
+      return wip(post, keyword, negative);
 
     //  category:keyword
     //    カテゴリ名にkeywordを含むものを絞り込み(部分一致)
     case "category":
-      return category(post, keyword, flip);
+      return category(post, keyword, negative);
 
     //  in:keyword
     //    カテゴリ名がkeywordから始まるものを絞り込み(前方一致)
     case "in":
-      return inCategory(post, keyword, flip);
+      return inCategory(post, keyword, negative);
 
     //  body:keyword
     //    記事本文にkeywordを含むものを絞り込み
     case "body":
-      return body(post, keyword, flip);
+      return body(post, keyword, negative);
 
     //  #tag1 or tag:tag1
     //    tag1タグが付いているものを絞り込み
     case "tag":
-      return tags(post, keyword, flip);
+      return tags(post, keyword, negative);
 
     /* 未実装
     //  user:screen_name or @screen_name
@@ -145,57 +149,61 @@ function keyValue(post, type, keyword) {
 
 function isSpecial(keyword) {
   var initial = keyword.charAt(0);
-  return !!(initial === "#" || initial === "-" || initial === "@");
+  return !!(initial === "#" || initial === "@");
+}
+
+function isNegative(keyword) {
+  return (keyword.charAt(0) === "-");
 }
 
 var matcher = {
-  str(target, keyword, flip) {
+  str(target, keyword, negative) {
     var ret = target && target.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-    return flip ? !ret : ret;
+    return negative ? !ret : ret;
   },
-  arr(target, keyword, flip) {
+  arr(target, keyword, negative) {
     var ret = target && _.includes(target, keyword);
-    return flip ? !ret : ret;
+    return negative ? !ret : ret;
   },
   obj(target, keyword, filp) {
     return true;
   },
-  bool(target, keyword, flip) {
+  bool(target, keyword, negative) {
     if (!_.isBoolean(keyword)) {
       keyword = (keyword === "true");
     }
     var ret = target === keyword;
-    return flip ? !ret : ret;
+    return negative ? !ret : ret;
   },
   reg: {
-    start(target, keyword, flip) {
+    start(target, keyword, negative) {
       var reg = `^${keyword}`;
       var ret = target && reg.test(target);
-      return flip ? !ret : ret;
+      return negative ? !ret : ret;
     }
   }
 };
 
-function body(post, keyword, flip) {
-  return matcher.str(post.body_md, keyword, flip);
+function body(post, keyword, negative) {
+  return matcher.str(post.body_md, keyword, negative);
 }
 
-function tags(post, keyword, flip) {
-  return matcher.arr(post.tags, keyword, flip);
+function tags(post, keyword, negative) {
+  return matcher.arr(post.tags, keyword, negative);
 }
 
-function category(post, keyword, flip) {
-  return matcher.str(post.category, keyword, flip);
+function category(post, keyword, negative) {
+  return matcher.str(post.category, keyword, negative);
 }
 
-function inCategory(post, keyword, flip) {
-  return matcher.reg.start(post.category, keyword, flip);
+function inCategory(post, keyword, negative) {
+  return matcher.reg.start(post.category, keyword, negative);
 }
 
-function name(post, keyword, flip) {
-  return matcher.str(post.name, keyword, flip);
+function name(post, keyword, negative) {
+  return matcher.str(post.name, keyword, negative);
 }
 
-function wip(post, keyword, flip) {
-  return matcher.bool(post.wip, keyword, flip);
+function wip(post, keyword, negative) {
+  return matcher.bool(post.wip, keyword, negative);
 }

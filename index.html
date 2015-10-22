@@ -36,7 +36,7 @@
           </list-post>
         </div>
 
-        <div class="l-listHeading" v-show="menuState.heading">
+        <div class="l-listHeading" v-show="menuState.heading" v-el:posts>
           <list-heading
             :posts.sync="posts"
             :state="menuState"

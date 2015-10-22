@@ -53,7 +53,9 @@
 
     watch: {
       current() {
-        this.currentPost = _.find(this.posts, {_uid: this.current});
+        if (this.current !== null) {
+          this.currentPost = _.find(this.posts, {_uid: this.current});
+        }
       }
     },
 
@@ -98,8 +100,13 @@
       },
 
       "change:posts:current"(post) {
-        this.current = post._uid;
-        this.config.preview = true;
+        if (post) {
+          this.current = post._uid;
+          this.config.preview = true;
+        }
+        else {
+          this.current = null;
+        }
       },
       "remove:posts"(post) {
         this.$once("close:dialog:confirm", (confirm) => {
@@ -114,6 +121,11 @@
 
       "open:editor"(post) {
         ipc.send("open:editor", JSON.parse(JSON.stringify(post)));
+      },
+
+      "set:keyword"(keyword) {
+        this.$broadcast("set:keyword", keyword);
+        this._postsScrollTop();
       }
     },
 
@@ -144,6 +156,9 @@
       },
       _getPostIndex(post) {
         return _.findIndex(this.posts, {_uid: post._uid});
+      },
+      _postsScrollTop() {
+        this.$els.posts.scrollTop = 0;
       }
     },
 

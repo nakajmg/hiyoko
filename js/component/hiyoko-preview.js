@@ -82,6 +82,7 @@ module.exports = {
     },
     close() {
       this.state.preview = false;
+      this.$dispatch("change:posts:current", null);
     }
   }
 };

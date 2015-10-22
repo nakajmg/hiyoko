@@ -11,7 +11,13 @@ module.exports = {
   `,
   methods: {
     resetSearch() {
-      this.search = "";
+      this.$dispatch("set:keyword", "");
+    }
+  },
+
+  events: {
+    "set:keyword"(keyword) {
+      this.search = keyword;
     }
   }
 };

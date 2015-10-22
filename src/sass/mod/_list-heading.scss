@@ -12,7 +12,7 @@ $root: ".m-list-heading";
     padding: 20px 20px 10px;;
     border-bottom: 1px solid rgba(0,0,0,0.1);
     min-height: 85px;
-    max-width: 840px;
+    max-width: 1000px;
     position: relative;
     word-break: break-all;
     &.state-wip {
@@ -58,6 +58,11 @@ $root: ".m-list-heading";
   &__category {
     color: rgba(60,74,96,0.5);
     line-height: 1;
+    display: inline-block;
+    &:hover {
+      color: $color-main;
+      text-decoration: underline;
+    }
   }
 
   &__mid {
@@ -74,6 +79,10 @@ $root: ".m-list-heading";
     color: rgba(60,74,96,0.5);
     font-size: 12px;
     margin-right: 3px;
+    &:hover {
+      color: $color-main;
+      text-decoration: underline;
+    }
   }
 
   &__edit {
