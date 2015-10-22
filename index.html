@@ -22,7 +22,7 @@
     <section class="l-main__right">
       <section class="l-header">
         <hiyoko-header
-
+          :search.sync="search"
           ></hiyoko-header>
       </section>
 
@@ -41,6 +41,7 @@
             :posts.sync="posts"
             :state="menuState"
             :current="current"
+            :search="search"
             >
           </list-heading>
         </div>

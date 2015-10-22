@@ -1,4 +1,5 @@
 var moment = require("moment-timezone");
+var _ = require("lodash");
 module.exports = {
   watch: {
     "state.heading"() {
@@ -16,7 +17,7 @@ module.exports = {
   template: `
     <div class="m-list-heading">
       <a href="#"
-        v-for="post in posts | filterBy search in 'name' 'full_name' 'body_md'"
+        v-for="post in posts | esa-filter search in 'name' 'full_name' 'body_md'"
         class="m-list-heading__item" :class="{'state-wip': post.wip, 'state-current': current == post._uid}"
         @dblclick="edit(post)"
         @click="select(post)"
