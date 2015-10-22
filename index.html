@@ -45,13 +45,7 @@
           </list-heading>
         </div>
         <div class="l-md state-bottom" v-if="currentPost" v-show="config.preview">
-          <div class="l-md__toolbar" v-if="currentPost">
-            <hiyoko-toolbar
-              v-ref:toolbar
-              :post.sync="currentPost"
-              :state.sync="config"
-              ></hiyoko-toolbar>
-          </div>
+
           <div class="l-preview" v-show="config.preview && currentPost">
             <hiyoko-preview
               v-ref:preview
@@ -59,6 +53,13 @@
               :state.sync="config"
               :readonly="true"
               ></hiyoko-preview>
+          </div>
+          <div class="l-md__toolbar" v-if="currentPost">
+            <hiyoko-toolbar
+              v-ref:toolbar
+              :post.sync="currentPost"
+              :state.sync="config"
+              ></hiyoko-toolbar>
           </div>
         </div>
       </section>

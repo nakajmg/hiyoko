@@ -33,6 +33,7 @@
     word-break: break-all;
     box-sizing: border-box;
     flex-basis: 100%;
+    flex-direction: column;
 
     .l-input {
       flex-basis: 50%;
@@ -65,11 +66,14 @@
       position: fixed;
       z-index: 1;
       top: 0;
-      //background-color: $color-toolbar;
+      right: 0;
       background-color: transparent;
+      //background-color: $color-toolbar;
+      display: flex;
       color: $color-toolbar-fore;
       padding: 10px;
-      width: 100%;
+      //width: 100%;
+      box-sizing: border-box;
     }
   }
 
@@ -81,10 +85,10 @@
   }
 
   .state-bottom {
-    .l-md__toolbar {
-      top: initial;
-      bottom: 0;
-    }
+    //.l-md__toolbar {
+    //  top: initial;
+    //  bottom: 0;
+    //}
   }
 }
 
