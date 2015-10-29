@@ -22,6 +22,7 @@ module.exports = {
         @dblclick="edit(post)"
         @click="select(post)"
         @keydown.enter="select(post)"
+        track-by="_uid"
         >
         <!--<div class="m-list-post__left">-->
           <!--<div class="m-list-post__icon">-->

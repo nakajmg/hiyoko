@@ -18,7 +18,6 @@ $root: ".m-categoryList";
     list-style: none;
     margin: 0;
     padding: 0;
-    //max-height: calc(100% - 40px);
     overflow-y: scroll;
   }
 
@@ -41,19 +40,15 @@ $root: ".m-categoryList";
       background: rgba(0,0,0,0.2);
       color: white;
     }
-    &:before {
-      content: "└";
-      color: rgba(255,255,255,0.5);
-      margin-right: 5px;
-    }
   }
   &__item {
     box-sizing: border-box;
     position: relative;
     width: 100%;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
-    min-height: 54px;
-
+    > a {
+      padding-left: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, .2);
+    }
     &.state-current {
       > a {
         background-color: #333 !important;
@@ -73,25 +68,71 @@ $root: ".m-categoryList";
       }
     }
 
+    #{$root}__tree {
+      display: inline-block;
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      color: rgba(255,255,255,0.2);
+      margin-left: 2px;
+      &:before {
+        content: "\f0fe";
+      }
+      &:hover {
+        color: rgba(255,255,255,0.5);
+      }
+    }
+
     ul {
+      height: 0;
+      overflow: hidden;
       list-style: none;
       margin: 0;
       padding: 0;
 
-      li[hiyoko-depth="1"] { a {padding-left: 10px; }}
-      li[hiyoko-depth="2"] { a {padding-left: 20px; }}
-      li[hiyoko-depth="3"] { a {padding-left: 30px; }}
-      li[hiyoko-depth="4"] { a {padding-left: 40px; }}
-      li[hiyoko-depth="5"] { a {padding-left: 50px; }}
-      li[hiyoko-depth="6"] { a {padding-left: 60px; }}
+      li[hiyoko-depth="1"] { a {padding-left: 20px; }}
+      li[hiyoko-depth="2"] { a {padding-left: 30px; }}
+      li[hiyoko-depth="3"] { a {padding-left: 40px; }}
+      li[hiyoko-depth="4"] { a {padding-left: 50px; }}
+      li[hiyoko-depth="5"] { a {padding-left: 60px; }}
+      li[hiyoko-depth="6"] { a {padding-left: 70px; }}
+      li > a {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        &:before {
+          content: "└";
+          color: rgba(255,255,255,0.5);
+          margin-right: 5px;
+        }
+      }
       li.state-current {
         > a {
           background-color: #333 !important;
           color: #fff !important;
         }
       }
-    }
+      li.state-open {
+        > ul {
+          height: auto;
+        }
 
+        > a #{$root}__tree {
+          &:before {
+            content: "\f146";
+          }
+        }
+      }
+    }
+    &.state-open {
+      > ul {
+        height: auto;
+      }
+
+      > a #{$root}__tree {
+        &:before {
+          content: "\f146";
+        }
+      }
+    }
   }
   &__item--current {
     background-color: #333 !important;
