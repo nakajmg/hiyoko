@@ -17,11 +17,11 @@
     height: calc(100% - 56px);
     //overflow-y: scroll;
   }
-
-  .l-posts {
-    height: 100%;
-    flex-grow: 0;
-  }
+  //
+  //.l-posts {
+  //  height: 100%;
+  //  flex-grow: 0;
+  //}
 
   .l-md {
     flex-grow: 1;
@@ -92,7 +92,11 @@
     }
   }
 
-  .l-listHeading {
+  .l-category {
+    height: 100%;
+    flex-grow: 0;
+  }
+  .l-posts {
     height: 100%;
     flex-grow: 1;
     flex-basis: 100%;

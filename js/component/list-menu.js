@@ -40,16 +40,16 @@ module.exports = {
         </a>
       </li>
       <li class="m-menu__item"
-          @click="toggleMenu('posts')"
-          :class="{'m-menu__item--current': state.posts}"
-      >
-        <a>
+          @click="toggleMenu('category')"
+          :class="{'m-menu__item--current': state.category}"
+          >
+          <a>
           <i class="fa fa-home"></i><span>HOME</span>
         </a>
       </li>
-      <li class="m-menu__item"
-          @click="toggleMenu('heading')"
-          :class="{'m-menu__item--current': state.heading}"
+      <li class="m-menu__item state-posts"
+          @click="toggleMenu('posts')"
+          :class="{'m-menu__item--current': state.posts}"
       >
         <a>
           <i class="fa fa-file-text-o"></i><span>POSTS</span>

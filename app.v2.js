@@ -10,6 +10,8 @@
   var _ = require("lodash");
   marked.setOptions(require("./js/markedOptions"));
   var ipc = require("ipc");
+  var getCategoryTree = require("./js/tree");
+
 
   /* registration component */
   Vue.component("dialog-input", require("./js/component/dialog-input"));
@@ -17,11 +19,11 @@
   Vue.component("dialog-loader", require("./js/component/dialog-loader"));
   Vue.component("dialog-notify", require("./js/component/dialog-notify"));
   Vue.component("list-menu", require("./js/component/list-menu"));
-  Vue.component("list-post", require("./js/component/list-post"));
   Vue.component("hiyoko-editor", require("./js/component/hiyoko-editor"));
   Vue.component("hiyoko-preview", require("./js/component/hiyoko-preview"));
   Vue.component("hiyoko-toolbar", require("./js/component/hiyoko-toolbar"));
-  Vue.component("list-heading", require("./js/component/list-heading"));
+  Vue.component("list-post", require("./js/component/list-post"));
+  Vue.component("list-category", require("./js/component/list-category"));
   Vue.component("hiyoko-settings", require("./js/component/hiyoko-settings"));
   Vue.component("hiyoko-header", require("./js/component/hiyoko-header"));
   Vue.filter("esa-filter", require("./js/filter/esa"));
@@ -38,6 +40,8 @@
 //        { _uid: 1444669079594, name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"},
 //        { _uid: 1444669079595, name: "おんぎゃー", category: "定例/10/31/", tags: ["定例", "tag2"], full_name: "定例/10/31/おんぎゃー #定例 #tag2", wip: false, body_md: "おぎゃあおぎゃあ"},
       ],
+      categories: [
+      ],
       config: {
         delay: 100,
         editor: true,
@@ -45,8 +49,8 @@
       },
       menuState: {
         newPost: true,
-        posts: false,
-        heading: true,
+        category: true,
+        posts: true,
         settings: false
       }
     },
@@ -162,6 +166,14 @@
       }
     },
 
+    computed: {
+      categories() {
+        var categories = _.uniq(_.compact(_.pluck(this.posts, "category")));
+        var tree = getCategoryTree(categories);
+        return tree;
+      }
+    },
+
     created() {
       let posts = require("./dummy_posts.json");
       _.each(posts, (post, index) => {
@@ -169,14 +181,11 @@
         post._modified_at = "";
         this.posts.$set(this.posts.length, post);
       });
+
       ipc.on("post-update", (post) => {
         var index = this._getPostIndex(post);
         _.assign(this.posts[index], post);
       });
-    },
-
-    ready() {
-
     }
   });
 

@@ -92,7 +92,7 @@ $root: ".m-menu";
       display: none !important;
     }
   }
-  &__item:last-of-type {
+  &__item.state-posts {
     &:after {
       border-right-color: #fff;
     }

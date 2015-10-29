@@ -1,73 +1,89 @@
+var moment = require("moment-timezone");
 var _ = require("lodash");
 module.exports = {
-  props: ["posts", "state", "current", "currentPost"],
-  data() {
-    return {
-      search: "",
-      listedLength: 1
-    }
-  },
-  computed: {
-    isPosts() {
-      return this.posts.length !== 0;
-    },
-    isList() {
-      if (this.isPosts) {
-        return false
+  watch: {
+    "state.heading"() {
+      if (this.state.heading) {
+        this.state.posts = false;
       }
-      return this.listedLength !== 0;
+    },
+    "state.posts"() {
+      if (this.state.posts) {
+        this.state.heading = false;
+      }
     }
   },
+  props: ["posts", "state", "current", "search"],
   template: `
-    <div class="m-postList" v-show="state" transition="m-postList">
-      <div class="m-postList__empty" v-if="!isPosts"><a>(\\( ⁰⊖⁰)/)  NO POST</a></div>
-      <ul class="m-postList__list" v-el:list>
-        <li class="m-postList__item"
-          v-for="post in posts | filterBy search in 'name' 'full_name' 'body_md'"
-          :class="{'m-postList__item--current': post._uid === current}"
-          @click="select(post)"
-          @dblclick="openEditor(post)"
-          track-by="_uid"
-          v-ref:post
+    <div class="m-list-post">
+      <a href="#"
+        v-for="post in posts | esa-filter search in 'name' 'full_name' 'body_md'"
+        class="m-list-post__item" :class="{'state-wip': post.wip, 'state-current': current == post._uid}"
+        @dblclick="edit(post)"
+        @click="select(post)"
+        @keydown.enter="select(post)"
         >
-          <a>{{post.name}}</a>
-          <span class="m-postList__trash" @click.stop="remove(post)"><i class="fa fa-trash"></i></span>
-        </li>
-      </ul>
-      <div class="m-postList__filter">
-        <i class="fa fa-search"></i><input v-model="search" placeholder="search in all fields"><i class="fa fa-times-circle" @click="resetSearchText"></i>
-      </div>
+        <!--<div class="m-list-post__left">-->
+          <!--<div class="m-list-post__icon">-->
+            <!--<img :src="post.created_by ? post.created_by.icon : null">-->
+          <!--</div>-->
+        <!--</div>-->
+        <div class="m-list-post__right">
+          <div class="m-list-post__category">
+            <span @click="searchByCategory(post.category)">{{post.category}}</span>
+          </div>
+          <div class="m-list-post__mid">
+            <span class="m-list-post__name" @click="select(post)">{{post.name}}</span>
+            <span class="m-list-post__tag" v-for="tag in post.tags" @click="searchByTag(tag)">#{{tag}}</span>
+            <span class="m-list-post__edit" @click="edit(post)"><i class="fa fa-pencil"></i></span>
+          </div>
+          <div class="m-list-post__feedback">
+            <span class="m-list-post__star" :class="{'state-active': post.stargazers_count}">
+              <i class="fa fa-star"></i>
+              {{post.stargazers_count}}
+            </span>
+            <span class="m-list-post__watch" :class="{'state-active': post.watchers_count}">
+              <i class="fa fa-eye"></i>{{post.watchers_count}}
+            </span>
+            <span class="m-list-post__comments" :class="{'state-active': post.comments_count}">
+              <i class="fa fa-comments"></i>{{post.comments_count}}
+            </span>
+            <span class="m-list-post__date">
+              <div>
+                <span class="m-list-post__date-label">Updated </span><i class="fa fa-clock-o"></i>{{date(post.updated_at)}}
+              </div><br>
+              <div>
+                <span class="m-list-post__date-label">Modified </span><i class="fa fa-clock-o"></i>{{date(post._modified_at)}}
+              </div>
+            </span>
+          </div>
+        </div>
+      </a>
     </div>
   `,
 
-  watch: {
-    search() {
-      _.defer(() => {
-        this.listedLength = this._getListedLength();
-      })
-    },
-    posts() {
-      this.listedLength = this._getListedLength();
-    }
-  },
   methods: {
+    edit(post) {
+      this.$dispatch("open:editor", post);
+    },
+    date(time) {
+      if (time) {
+        return moment(time).tz("Asia/Tokyo").format("YYYY/MM/DD HH:mm:ss");
+      }
+      else {
+        return "none";
+      }
+    },
     select(post) {
       this.$dispatch("change:posts:current", post);
     },
-    remove(post) {
-      this.$dispatch("remove:posts", post);
+    searchByTag(tag) {
+      event.stopPropagation();
+      this.$dispatch("set:keyword", "tag:" + tag);
     },
-    resetSearchText() {
-      this.search = "";
-    },
-    _getListedLength() {
-      return this.$refs.post.length;
-    },
-    openEditor(post) {
-      this.$dispatch("open:editor", post);
+    searchByCategory(category) {
+      event.stopPropagation();
+      this.$dispatch("set:keyword", "category:" + category);
     }
-  },
-  ready() {
-//    this.listedLength = this._getListedLength();
   }
 };

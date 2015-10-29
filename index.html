@@ -27,24 +27,24 @@
       </section>
 
       <section class="l-main__contents">
-        <div class="l-posts">
-          <list-post
-            v-ref:listPosts
-            :posts.sync="posts"
-            :state="menuState.posts"
-            :current="current">
-          </list-post>
+        <div class="l-category" v-show="menuState.category" v-el:category>
+          <list-category
+            :state="menuState"
+            :search="search"
+            :categories="categories"
+            >
+          </list-category>
         </div>
-
-        <div class="l-listHeading" v-show="menuState.heading" v-el:posts>
-          <list-heading
+        <div class="l-posts" v-show="menuState.posts" v-el:posts>
+          <list-post
             :posts.sync="posts"
             :state="menuState"
             :current="current"
             :search="search"
             >
-          </list-heading>
+          </list-post>
         </div>
+
         <div class="l-md state-bottom" v-if="currentPost" v-show="config.preview">
 
           <div class="l-preview" v-show="config.preview && currentPost">
