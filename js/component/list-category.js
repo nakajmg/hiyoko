@@ -1,25 +1,28 @@
 var _ = require("lodash");
 var Vue = require("vue");
 var $ = jQuery = require("../../lib/jquery.min");
+var postsFilter = require("../filter/esa");
+
 Vue.component("p-child", {
-  props:["children", "search"],
+  props:["children", "search", "posts"],
   template: `
     <ul>
       <li
-        v-for="child in children"
-        @click="select(child)"
-        :hiyoko-depth="child.depth"
-        :class="{'state-current': isCurrent(child)}"
+        v-for="category in children"
+        @click="select(category)"
+        :hiyoko-depth="category.depth"
+        :class="{'state-current': isCurrent(category)}"
         v-el:item
         track-by.literal="$key"
         >
-        <a class="m-categoryList__name">{{$key}}
-          <template v-if="hasChild(child)">
+        <a href="#" class="m-categoryList__name">{{$key}}
+          <template v-if="hasChild(category)">
             <span @click="toggle" class="m-categoryList__tree"></span>
           </template>
+          <span class="m-categoryList__count" v-text="count(category)"></span>
         </a>
 
-        <p-child :children="child.children" :search="search"></p-child>
+        <p-child :children="category.children" :search="search" :posts="posts"></p-child>
       </li>
     </ul>
   `,
@@ -41,12 +44,15 @@ Vue.component("p-child", {
     },
     isCurrent(category) {
       return _isCurrent(category, this.search);
+    },
+    count(category) {
+      return _postCount(this.posts, this.getPath(category));
     }
   }
 });
 
 module.exports = {
-  props: ["categories", "search", "state"],
+  props: ["categories", "search", "state", "posts"],
   template: `
     <div class="m-categoryList" v-show="state.category" transition="m-categoryList">
       <ul class="m-categoryList__list" v-el:list>
@@ -58,16 +64,20 @@ module.exports = {
           :class="{'state-current': isCurrent(category)}"
           v-ref:item
           >
-          <a class="m-categoryList__name">{{$key}}
-            <span @click="toggle" class="m-categoryList__tree"></span>
+          <a href="#" class="m-categoryList__name">{{$key}}
+            <template v-if="hasChild(category)">
+              <span @click="toggle" class="m-categoryList__tree"></span>
+            </template>
+            <span class="m-categoryList__count" v-text="count(category)"></span>
           </a>
-          <p-child :search="search" :children="category.children" v-if="hasChild(category)"></p-child>
+          <p-child :search="search" :children="category.children" :posts="posts" v-if="hasChild(category)"></p-child>
         </li>
       </ul>
     </div>
   `,
   methods: {
     toggle() {
+      event.stopPropagation();
       _toggle(event);
     },
     select(category) {
@@ -83,6 +93,9 @@ module.exports = {
     },
     isCurrent(category) {
       return _isCurrent(category, this.search);
+    },
+    count(category) {
+      return _postCount(this.posts, this.getPath(category));
     }
   }
 };
@@ -115,4 +128,9 @@ function _isCurrent(category, search) {
   else {
     return false;
   }
+}
+
+function _postCount(posts, keyword) {
+  var posts = postsFilter(JSON.parse(JSON.stringify(posts)), `category:${keyword}`);
+  return posts.length;
 }
