@@ -16,6 +16,15 @@ module.exports = {
   props: ["posts", "state", "current", "search"],
   template: `
     <div class="m-list-post">
+      <div class="m-list-post__header" v-if="isFilterdCategory">
+        <span><i class="fa fa-folder"></i></span>
+        <span>{{currentCategory}}</span>
+        <span>1</span>
+        <span class="__strech"></span>
+        <span>
+          <button class="m-list-post__newPost" @click="newPost"><i class="fa fa-pencil"></i> Create a new post here</button>
+        </span>
+      </div>
       <a href="#"
         v-for="post in posts | esa-filter search in 'name' 'full_name' 'body_md'"
         class="m-list-post__item" :class="{'state-wip': post.wip, 'state-current': current == post._uid}"
@@ -85,6 +94,33 @@ module.exports = {
     searchByCategory(category) {
       event.stopPropagation();
       this.$dispatch("set:keyword", "category:" + category);
+    },
+    newPost(){
+      this.$dispatch("add:newpost", {
+        category: this.currentCategory,
+        full_name: this.currentCategory + "/"
+      });
+    }
+  },
+
+  computed: {
+    isFilterdCategory() {
+      var cat = this.search.split(":");
+      if (cat[0] && (cat[0] === "in" || cat[0] === "category")) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
+    currentCategory() {
+      var cat = this.search.split(":");
+      if (cat[0] && (cat[0] === "in" || cat[0] === "category")) {
+        return cat[1];
+      }
+      else {
+        return "";
+      }
     }
   }
 };

@@ -79,11 +79,15 @@
         this.$refs.dialognotify.$emit("add", notify);
       },
 
-      "add:newpost"() {
+      "add:newpost"(options) {
         var post = _.assign({}, require("./js/NEW_POST"));
         post._uid = Date.now();
         post.created_at = this._getDate();
         post._modified_at = this._getDate();
+        if (options && _.keys(options).length) {
+          _.assign(post, options);
+          console.log(options, post);
+        }
         this.posts.splice(0,0, post);
         this.current = post._uid;
         _.defer(() => {

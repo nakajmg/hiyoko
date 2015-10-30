@@ -9,6 +9,7 @@ module.exports = {
         placeholder="category1/category2/Input document title #tag1 #tag2"
         v-el:name
         @keyup="onChangeName"
+        autofocus
       >
       <textarea class="m-editor__textarea"
         placeholder="# Input with Markdown"
