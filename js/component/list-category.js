@@ -37,7 +37,7 @@ Vue.component("p-child", {
     select(category) {
       event.stopPropagation();
       var path = _getPath(category);
-      this.$dispatch("set:keyword", "category:" + path);
+      this.$dispatch("set:keyword", "in:" + path);
     },
     getPath(category) {
       return _getPath(category);
@@ -84,7 +84,7 @@ module.exports = {
     select(category) {
       event.stopPropagation();
       var path = _getPath(category);
-      this.$dispatch("set:keyword", "category:" + path);
+      this.$dispatch("set:keyword", "in:" + path);
     },
     hasChild(category) {
       return _hasChild(category);
@@ -132,6 +132,6 @@ function _isCurrent(category, search) {
 }
 
 function _postCount(posts, keyword) {
-  var posts = postsFilter(JSON.parse(JSON.stringify(posts)), `category:${keyword}`);
-  return posts.length;
+  var filterd = postsFilter(posts, `in:${keyword}`);
+  return filterd.length;
 }
