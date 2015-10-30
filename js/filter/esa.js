@@ -177,7 +177,7 @@ var matcher = {
   },
   reg: {
     start(target, keyword, negative) {
-      var reg = `^${keyword}`;
+      var reg = new RegExp(`^${keyword}`);
       var ret = target && reg.test(target);
       return negative ? !ret : ret;
     }
