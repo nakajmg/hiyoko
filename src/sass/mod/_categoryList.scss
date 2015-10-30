@@ -28,17 +28,11 @@ $root: ".m-categoryList";
   }
 
   &__name {
-    display: block;
     cursor: pointer;
     padding: 7px 5px;
     font-size: 90%;
     font-family: "Lato", Arial, "ヒラギノ角ゴPro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", sans-serif;
-    //line-height: 30px;
     transition-duration: .3s;
-    &:hover {
-      background: rgba(0,0,0,0.2);
-      color: white;
-    }
     display: flex;
     align-items: center;
     position: relative;
@@ -46,13 +40,19 @@ $root: ".m-categoryList";
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     text-decoration: none;
     color: inherit;
+    height: 45px;
+    box-sizing: border-box;
+    &:hover {
+      background: rgba(0,0,0,0.2);
+      color: white;
+    }
   }
   &__label {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
     overflow: hidden;
-    max-width: 170px;
+    max-width: 165px;
   }
   
   &__tree {
