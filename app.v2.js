@@ -36,12 +36,7 @@
       current: null,
       currentPost: null,
       search: "",
-      posts: [
-//        { _uid: 1444669079594, name: "hoge", category: "hoge/fuga", tags: ["tag1", "tag2"], full_name: "hoge/fuga/hoge #tag1 #tag2", wip: true, body_md: "hogehoge"},
-//        { _uid: 1444669079595, name: "おんぎゃー", category: "定例/10/31/", tags: ["定例", "tag2"], full_name: "定例/10/31/おんぎゃー #定例 #tag2", wip: false, body_md: "おぎゃあおぎゃあ"},
-      ],
-      categories: [
-      ],
+      posts: [],
       config: {
         delay: 100,
         editor: true,
