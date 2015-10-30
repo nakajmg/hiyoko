@@ -1,5 +1,6 @@
 var moment = require("moment-timezone");
 var _ = require("lodash");
+var filter = require("../filter/esa");
 module.exports = {
   watch: {
     "state.heading"() {
@@ -19,7 +20,7 @@ module.exports = {
       <div class="m-list-post__header" v-if="isFilterdCategory">
         <span><i class="fa fa-folder"></i></span>
         <span>{{currentCategory}}</span>
-        <span>1</span>
+        <span v-text="postCount"></span>
         <span class="__strech"></span>
         <span>
           <button class="m-list-post__newPost" @click="newPost"><i class="fa fa-pencil"></i> Create a new post here</button>
@@ -120,6 +121,14 @@ module.exports = {
       }
       else {
         return "";
+      }
+    },
+    postCount() {
+      if (this.isFilterdCategory) {
+        return filter(this.posts, this.search).length;
+      }
+      else {
+        return 0;
       }
     }
   }
