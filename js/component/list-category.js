@@ -64,7 +64,8 @@ module.exports = {
           :class="{'state-current': isCurrent(category)}"
           v-ref:item
           >
-          <a href="#" class="m-categoryList__name">{{$key}}
+          <a href="#" class="m-categoryList__name">
+            <span class="m-categoryList__label">{{$key}}</span>
             <template v-if="hasChild(category)">
               <span @click="toggle" class="m-categoryList__tree"></span>
             </template>

@@ -33,24 +33,48 @@ $root: ".m-categoryList";
     padding: 7px 5px;
     font-size: 90%;
     font-family: "Lato", Arial, "ヒラギノ角ゴPro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", sans-serif;
-    line-height: 30px;
+    //line-height: 30px;
     transition-duration: .3s;
     &:hover {
       background: rgba(0,0,0,0.2);
       color: white;
     }
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: inherit;
   }
+  &__label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    max-width: 170px;
+  }
+  
+  &__tree {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    color: rgba(255,255,255,0.2);
+    margin-left: 5px;
+    line-height: 30px;
+    &:before {
+      content: "\f0fe";
+    }
+    &:hover {
+      color: rgba(255,255,255,0.5);
+    }
+  }
+
   &__item {
     box-sizing: border-box;
     position: relative;
     width: 100%;
-    > a {
-      position: relative;
-      padding-left: 10px;
-      border-bottom: 1px solid rgba(0, 0, 0, .2);
-      text-decoration: none;
-      color: inherit;
-    }
     &.state-current {
       > a {
         background-color: #333 !important;
@@ -67,21 +91,6 @@ $root: ".m-categoryList";
           color: tomato;
           opacity: 1;
         }
-      }
-    }
-
-    #{$root}__tree {
-      display: inline-block;
-      font: normal normal normal 14px/1 FontAwesome;
-      font-size: inherit;
-      text-rendering: auto;
-      color: rgba(255,255,255,0.2);
-      margin-left: 2px;
-      &:before {
-        content: "\f0fe";
-      }
-      &:hover {
-        color: rgba(255,255,255,0.5);
       }
     }
 
