@@ -15,16 +15,16 @@ module.exports = {
       this.beforeState = {
         newPost: this.state.newPosts,
         posts: this.state.posts,
-        heading: this.state.heading
+        category: this.state.category
       };
       this.state.newPost = false;
       this.state.posts = false;
-      this.state.heading = false;
+      this.state.category = false;
     },
     enable() {
       this.state.newPosts = this.beforeState.newPost;
       this.state.posts = this.beforeState.posts;
-      this.state.heading = this.beforeState.heading;
+      this.state.category = this.beforeState.category;
     }
   },
   template: `
