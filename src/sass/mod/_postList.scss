@@ -103,6 +103,7 @@ $root: ".m-list-post";
     line-height: 1;
     position: relative;
     margin-top: 3px;
+    flex-wrap: wrap;
   }
 
   &__star, &__watch, &__comments, &__date {
@@ -227,6 +228,7 @@ $root: ".m-list-post";
     @extend %btn;
     padding: 12px 8px;
     font-size: 13px;
+    margin: 0;
   }
 
   &__header {
@@ -234,6 +236,7 @@ $root: ".m-list-post";
     border-bottom: 1px solid rgba(0,0,0,0.1);
     padding: 20px;
     display: flex;
+    flex-wrap: wrap;
     span {
       vertical-align: middle;
     }
@@ -259,7 +262,6 @@ $root: ".m-list-post";
       line-height: 20px;
     }
     span:last-of-type {
-      margin-left: 8px;
     }
   }
 }
