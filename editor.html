@@ -44,15 +44,6 @@
   </div>
 </div>
 <script src="./js/editor.js"></script>
-<script>var $ = jQuery = require("./lib/jquery.min");</script>
-<script>
-  $(function() {
-    $(document).on("click", ".l-main a[href]", function(e) {
-      e.originalEvent.preventDefault();
-      var href = $(this).attr("href");
-      require("shell").openExternal(href);
-    });
-  });
-</script>
+<script src="./lib/jquery.openwindow.js"></script>
 </body>
 </html>

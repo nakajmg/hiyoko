@@ -85,15 +85,7 @@
 <script src="./lib/pouchdb.min.js"></script>
 <script src="./lib/pouchdb.find.min.js"></script>
 <script src="./app.v2.js"></script>
-<script>
-$(function() {
-  $(document).on("click", ".l-main a[href]", function(e) {
-    e.originalEvent.preventDefault();
-    var href = $(this).attr("href");
-    require("shell").openExternal(href);
-  });
-});
-</script>
+<script src="./lib/jquery.openwindow.js"></script>
 <script>require('electron-connect').client.create()</script>
 </body>
 </html>
