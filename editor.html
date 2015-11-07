@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<div id="app" v-cloak>
+<main id="app" v-cloak>
   <div class="l-main">
     <div class="l-md state-bottom state-edit">
       <div class="l-input" v-show="config.editor">
@@ -42,7 +42,11 @@
       </div>
     </div>
   </div>
-</div>
+  <dialog-input v-ref:dialogInput></dialog-input>
+  <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
+  <dialog-loader v-ref:dialogLoader></dialog-loader>
+  <dialog-notify v-ref:dialogNotify></dialog-notify>
+</main>
 <script src="./js/editor.js"></script>
 <script src="./lib/jquery.openwindow.js"></script>
 </body>
