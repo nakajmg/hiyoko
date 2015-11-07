@@ -93,9 +93,6 @@
         _.defer(() => {
           this.$emit("open:editor", this.currentPost);
         });
-//        this.config.editor = true;
-//        this.config.preview = true;
-//        this.menuState.heading = false;
       },
 
       "change:menu:toggle"(type) {
@@ -174,13 +171,17 @@
     },
 
     created() {
-      let posts = require("./dummy_posts.json");
-      _.each(posts, (post, index) => {
-        post._uid = Date.now() + index;
-        post._modified_at = "";
-        this.posts.$set(this.posts.length, post);
-      });
+      try {
+        let posts = require("./dummy_posts.json");
+        _.each(posts, (post, index) => {
+          post._uid = Date.now() + index;
+          post._modified_at = "";
+          this.posts.$set(this.posts.length, post);
+        });
+      }
+      catch(e) {
 
+      }
       ipc.on("post-update", (post) => {
         var index = this._getPostIndex(post);
         _.assign(this.posts[index], post);
