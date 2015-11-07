@@ -1,3 +1,4 @@
+$root: ".m-menu";
 .m-menu {
   list-style: none;
   padding: 0;
@@ -11,6 +12,7 @@
   position: relative;
   &__item {
     cursor: pointer;
+    position: relative;
     a {
       position: relative;
       display: flex;
@@ -47,6 +49,11 @@
       cursor: default;
       pointer-events: none;
     }
+
+    &.--spacer {
+      flex-grow: 1;
+      cursor: default;
+    }
   }
   &__item--current {
     a {
@@ -56,12 +63,24 @@
     i {
       color: rgba(255,255,255,0.5);
     }
+    &:after {
+      right: 0;
+      position: absolute;
+      content: "";
+      display: block;
+      border: 10px solid transparent;
+      border-right: 10px solid #555;
+      top: 50%;
+      margin-top: -10px;
+      z-index: 10;
+    }
   }
   &__item:first-of-type {
     a {
       color: #fff;
       padding-top: 0;
       height: 100%;
+      background-color: transparent !important;
     }
     &[disabled] {
       a {
@@ -69,12 +88,20 @@
         color: rgba(0,0,0,0.5);
       }
     }
+    &:after {
+      display: none !important;
+    }
+  }
+  &__item.state-posts {
+    &:after {
+      border-right-color: #fff;
+    }
   }
 
-  &__item:last-of-type {
-    align-self: flex-end;
-    position: relative;
-    bottom: 0;
+  &__item:nth-of-type(3) {
+    &:after {
+      border-right-color: transparent;
+    }
   }
 
   &__newPost {
@@ -90,5 +117,15 @@
     &:hover {
       background-position: 4px 10px;
     }
+  }
+
+  &.state-settings {
+    #{$root}__item:nth-of-type(1),
+    #{$root}__item:nth-of-type(2),
+    #{$root}__item:nth-of-type(3) {
+      pointer-events: none;
+    }
+
+
   }
 }

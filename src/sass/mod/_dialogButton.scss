@@ -1,0 +1,32 @@
+.m-dialogButton {
+  -webkit-appearance: button;
+  color: #fff;
+  background-color: #0a9b94;
+  border: 1px solid #08837d;
+  width: 120px;
+  text-align: left;
+  line-height: 30px;
+  font-size: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 3px 0;
+
+  .fa-check,
+  .fa-times {
+    line-height: 30px;
+    font-size: 20px;
+    margin-right: 5px;
+  }
+
+  .fa-times {
+    padding-left: 14px;
+  }
+  .fa-check {
+    padding-left: 30px;
+  }
+
+  &:hover {
+    background-color: #08837d;
+  }
+}

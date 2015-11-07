@@ -1,5 +1,5 @@
-$root: ".m-list-post";
-.m-list-post {
+$root: ".m-list-heading";
+.m-list-heading {
   height: 100%;
   box-sizing: border-box;
   padding: 0 0 30px;
@@ -16,7 +16,7 @@ $root: ".m-list-post";
     position: relative;
     word-break: break-all;
     &.state-wip {
-      //background-color: rgba($color-main, .1);
+      background-color: rgba($color-main, .1);
     }
 
     &:focus {
@@ -103,7 +103,6 @@ $root: ".m-list-post";
     line-height: 1;
     position: relative;
     margin-top: 3px;
-    flex-wrap: wrap;
   }
 
   &__star, &__watch, &__comments, &__date {
@@ -164,28 +163,6 @@ $root: ".m-list-post";
     }
   }
 
-  %btn {
-    display: inline-block;
-    margin-bottom: 0;
-    font-weight: normal;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    white-space: nowrap;
-    padding: 5px 12px;
-    padding-left: 7px;
-    -webkit-user-select: none;
-    user-select: none;
-    background-color: #0a9b94;
-    border: 1px solid #08837d;
-    color: #fff;
-    line-height: 1;
-    font-size: 12px;
-    border-radius: 3px;
-    transition: 200ms ease;
-    margin-left: 3px;
-  }
-
   .state-wip {
     #{$root}__icon {
       //opacity: .5;
@@ -210,7 +187,28 @@ $root: ".m-list-post";
     }
 
     #{$root}__edit {
-      @extend %btn;
+      //position: absolute;
+      //top: 0;
+      //right: 0;
+      display: inline-block;
+      margin-bottom: 0;
+      font-weight: normal;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 5px 12px;
+      padding-left: 7px;
+      -webkit-user-select: none;
+      user-select: none;
+      background-color: #0a9b94;
+      border: 1px solid #08837d;
+      color: #fff;
+      line-height: 1;
+      font-size: 12px;
+      border-radius: 3px;
+      transition: 200ms ease;
+      margin-left: 3px;
       i {
         color: rgba(255,255,255,0.7);
       }
@@ -223,49 +221,4 @@ $root: ".m-list-post";
       }
     }
   }
-
-  #{$root}__newPost {
-    @extend %btn;
-    padding: 12px 8px;
-    font-size: 13px;
-    margin: 0;
-  }
-
-  &__header {
-    position: relative;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    span {
-      vertical-align: middle;
-    }
-    span:nth-of-type(1) {
-      font-size: 150%;
-      color: rgba(0,0,0,0.15);
-      margin-right: 5px;
-    }
-    span:nth-of-type(2) {
-      font-size: 150%;
-      color: rgba(60,74,96,0.5);
-    }
-    span:nth-of-type(3) {
-      margin-top: 12px;
-      color: rgba(60,74,96,0.5);
-      background: rgba(0,0,0,0.08);
-      font-family: "DIN Medium", "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
-      padding: 0px 15px 0px;
-      border-radius: 40px;
-      font-size: 90%;
-      margin-left: 10px;
-      height: 20px;
-      line-height: 20px;
-    }
-    span:last-of-type {
-    }
-  }
-}
-
-.__strech {
-  flex-grow: 1;
 }

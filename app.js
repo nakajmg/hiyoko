@@ -338,6 +338,7 @@
         return new Promise((resolve, reject) => {
           if (!post.number) {
             resolve();
+            return;
           }
           fetch(`${this.baseUrl}posts/${post.number}`, {
             method: 'delete',

@@ -10,7 +10,7 @@ const econ = require("electron-connect").server.create();
 
 const src = {
   sass: "src/sass/**/*.scss",
-  js: ["./app.js"]
+  js: ["app.js", "app.v2.js", "js/**/*.js"]
 };
 
 const dist = {
@@ -26,7 +26,7 @@ gulp.task("sass", () => {
 
 gulp.task("serve", () => {
   econ.start();
-  gulp.watch(["./main.js"], econ.restart);
+  gulp.watch(["main.js"], econ.restart);
   gulp.watch([src.sass], ["sass", econ.reload]);
-  gulp.watch(["./index.html", src.js], econ.reload);
+  gulp.watch(["*.html", src.js], econ.reload);
 });

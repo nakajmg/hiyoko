@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>(\( ⁰⊖⁰)/) editor</title>
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+
+  </style>
+  <link rel="stylesheet" href="./dist/app.css"/>
+  <link rel="stylesheet" href="./css/github.css"/>
+  <link rel="stylesheet" href="./css/font-awesome.min.css"/>
+</head>
+<body>
+
+<main id="app" v-cloak>
+  <div class="l-main">
+    <div class="l-md state-bottom state-edit">
+      <div class="l-input" v-show="config.editor">
+        <hiyoko-editor
+          v-ref:editor
+          :delay="config.delay"
+          :state.sync="config"
+          :post.sync="currentPost">
+        </hiyoko-editor>
+      </div>
+      <div class="l-preview" v-show="config.preview">
+        <hiyoko-preview
+          v-ref:preview
+          :state="config"
+          :post.sync="currentPost">
+        </hiyoko-preview>
+      </div>
+      <div class="l-md__toolbar">
+        <hiyoko-toolbar
+          v-ref:toolbar
+          :state="config"
+          :post.sync="currentPost"
+          ></hiyoko-toolbar>
+      </div>
+    </div>
+  </div>
+  <dialog-input v-ref:dialogInput></dialog-input>
+  <dialog-confirm v-ref:dialogConfirm></dialog-confirm>
+  <dialog-loader v-ref:dialogLoader></dialog-loader>
+  <dialog-notify v-ref:dialogNotify></dialog-notify>
+</main>
+<script src="./js/editor.js"></script>
+<script src="./lib/jquery.openwindow.js"></script>
+</body>
+</html>

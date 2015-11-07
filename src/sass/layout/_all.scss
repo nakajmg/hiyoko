@@ -6,10 +6,22 @@
     height: 100%;
   }
 
-  .l-posts {
+  &__right {
+    width: 100%;
     height: 100%;
-    flex-grow: 0;
+    //overflow: hidden;
   }
+
+  &__contents {
+    display: flex;
+    height: calc(100% - 56px);
+    //overflow-y: scroll;
+  }
+  //
+  //.l-posts {
+  //  height: 100%;
+  //  flex-grow: 0;
+  //}
 
   .l-md {
     flex-grow: 1;
@@ -17,9 +29,11 @@
     height: 100%;
     position: relative;
     overflow: auto;
-    //padding-bottom: 40px;
-    padding-top: 50px;
+    overflow-y: scroll;
+    word-break: break-all;
     box-sizing: border-box;
+    flex-basis: 100%;
+    flex-direction: column;
 
     .l-input {
       flex-basis: 50%;
@@ -42,32 +56,59 @@
 
     .l-preview {
       flex-basis: 50%;
-      box-sizing: border-box;
       flex-grow: 1;
-      padding: 10px;
-      //padding-bottom: 40px;
-      overflow: scroll;
+      padding: 10px 20px;
       max-width: 800px;
+      margin: 0 auto;width: 100%;
+      box-sizing: border-box;
     }
 
     &__toolbar {
-      position: absolute;
+      position: fixed;
+      z-index: 1;
       top: 0;
-      left: 0;
       right: 0;
-      background-color: $color-toolbar;
+      background-color: transparent;
+      //background-color: $color-toolbar;
+      display: flex;
       color: $color-toolbar-fore;
-      padding: 10px;
+      padding: 5px 10px;
+      //width: 100%;
+      box-sizing: border-box;
+    }
+
+    &.state-edit {
+      flex-direction: row;
+
+      .l-preview {
+        overflow-y: scroll;
+        margin-bottom: 50px;
+        border-bottom: 1px solid rgba(0,0,0,.1);
+      }
+      .l-md__toolbar {
+        top: initial;
+        bottom: 0;
+      }
     }
   }
 
+  .l-category {
+    height: 100%;
+    flex-grow: 0;
+  }
+  .l-posts {
+    height: 100%;
+    flex-grow: 1;
+    flex-basis: 100%;
+    overflow-y: scroll;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
   .state-bottom {
-    padding-top: 0;
-    padding-bottom: 50px;
-    .l-md__toolbar {
-      top: initial;
-      bottom: 0;
-    }
+    //.l-md__toolbar {
+    //  top: initial;
+    //  bottom: 0;
+    //}
   }
 }
 
